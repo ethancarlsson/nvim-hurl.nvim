@@ -1,0 +1,9 @@
+================================================================================
+INTRODUCTION                                                    *nvim-hurl.nvim*
+
+nvim-hurl.nvim is a plugin that adds various utilities to improve your workflow
+when using .hurl files.
+
+                                                                      *:HurlYank*
+:HurlYank
+Run a hurl file and yank the results into the "*" register.
