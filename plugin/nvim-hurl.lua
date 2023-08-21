@@ -1,3 +1,5 @@
+vim.cmd [[ au BufRead,BufNewFile *.hurl                setfiletype hurl ]]
+
 function HurlYank()
 	local filetype = vim.bo.filetype
 	if filetype ~= 'hurl' then return end
@@ -25,3 +27,6 @@ end
 
 vim.cmd([[ command! HurlYank lua HurlYank() ]])
 
+require('commands.hurl_run')
+vim.cmd([[ command! HurlRun lua HurlRun() ]])
+vim.cmd([[ command! HurlRunJson lua HurlRunJson() ]])

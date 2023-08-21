@@ -7,3 +7,7 @@ when using .hurl files.
                                                                       *:HurlYank*
 :HurlYank
 Run a hurl file and yank the results into the "*" register.
+
+                                                                      *:HurlRun*
+:HurlYank
+Run a hurl file and view the results in a split window scratch file.
