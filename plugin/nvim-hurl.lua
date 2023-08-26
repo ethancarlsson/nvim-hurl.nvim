@@ -29,4 +29,4 @@ vim.cmd([[ command! HurlYank lua HurlYank() ]])
 
 require('commands.hurl_run')
 vim.cmd([[ command! HurlRun lua HurlRun() ]])
-vim.cmd([[ command! HurlRunJson lua HurlRunJson() ]])
+vim.cmd([[ command! HurlRunFull lua HurlRunFull() ]])

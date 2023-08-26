@@ -32,8 +32,13 @@ local function get_file_type_from_content_type(content_type)
 	if string.match(content_type, 'json') then
 		return 'json'
 	end
+
 	if string.match(content_type, 'html') then
 		return 'html'
+	end
+
+	if string.match(content_type, 'xml') then
+		return 'xml'
 	end
 
 	return ''
@@ -59,19 +64,10 @@ local function split_to_buf(buf)
 	vim.api.nvim_set_current_win(current_window)
 end
 
-local function hurl_run()
-	local filetype = vim.bo.filetype
-	if filetype ~= 'hurl' then return end
-
-	local filename = vim.api.nvim_buf_get_name(0)
-
-	local command = '!hurl --verbose ' .. filename
-	---@diagnostic disable-next-line: undefined-field - it is defined.
-	local result = vim.api.nvim_command_output(command)
-
-	local buf = vim.api.nvim_create_buf(false, false)
-	vim.api.nvim_buf_set_option(buf, "readonly", false)
-
+---@param result string
+---@param buf integer
+---@param command string
+local function set_lines_and_filetype_from_result(result, buf, command)
 	local buf_file_type = ''
 	local lines = {}
 	local is_in_body = false
@@ -98,10 +94,62 @@ local function hurl_run()
 
 	vim.api.nvim_buf_set_option(buf, 'filetype', buf_file_type)
 
+end
+
+local function hurl_run()
+	local filetype = vim.bo.filetype
+	if filetype ~= 'hurl' then return end
+
+	local filename = vim.api.nvim_buf_get_name(0)
+
+	local command = '!hurl --verbose ' .. filename
+	---@diagnostic disable-next-line: undefined-field - it is defined.
+	local result = vim.api.nvim_command_output(command)
+
+	local buf = vim.api.nvim_create_buf(false, false)
+	set_lines_and_filetype_from_result(result, buf, command)
+	vim.api.nvim_buf_set_option(buf, "readonly", false)
+
 	return buf
 end
 
 function HurlRun()
 	local buf = hurl_run()
+	split_to_buf(buf)
+end
+
+local function hurl_run_full()
+	local filetype = vim.bo.filetype
+	if filetype ~= 'hurl' then return end
+
+	local filename = vim.api.nvim_buf_get_name(0)
+	local command = 'hurl ' .. filename
+	local handle, err = io.popen(command, 'r')
+
+	if handle == nil then
+		print('something went wrong while running hurl file')
+		return
+	end
+
+	if not err == nil then
+		vim.fn.setreg('*', err)
+		return
+	end
+
+	local result = handle:read('*all')
+
+	local buf = vim.api.nvim_create_buf(false, false)
+	set_lines_and_filetype_from_result(result, buf, command)
+	vim.api.nvim_buf_set_option(buf, "readonly", false)
+
+	handle:close()
+
+	return buf
+end
+
+--- This function is used for larger responses HurlRun() will cut off the result
+--- by default.
+function HurlRunFull()
+	local buf = hurl_run_full()
 	split_to_buf(buf)
 end
