@@ -1,5 +1,9 @@
 require('commands.constants.files')
 
+---Watch out with this state
+local temp_win = nil
+local temp_verbose_win = nil
+
 -- http://lua-users.org/wiki/StringRecipes
 local function string_starts_with(str, start)
 	return str:sub(1, #start) == start
@@ -62,7 +66,7 @@ local function get_command(filename, options)
 	return string.format('%s %s %s', command, options, filename)
 end
 
-local temp_win = nil
+
 local function split_to_buf(buf)
 	local current_window = vim.api.nvim_get_current_win()
 	if temp_win == nil or not vim.api.nvim_win_is_valid(temp_win) then
@@ -82,6 +86,16 @@ local function split_to_buf(buf)
 	vim.api.nvim_set_current_win(current_window)
 end
 
+---@param line string
+---@param command string
+---@return boolean
+local function is_verbose_info(line, command)
+	return (is_debug(line)
+	    or is_http_response_header(line)
+	    or is_http_request_header(line)
+	    or line == ':' .. command)
+end
+
 ---@param result string
 ---@param buf integer
 ---@param command string
@@ -94,11 +108,7 @@ local function set_lines_and_filetype_from_result(result, buf, command)
 		if (
 		    (is_in_body)
 		        or
-		        not (is_debug(s)
-		            or is_response_header
-		            or is_http_request_header(s)
-		            or s == ':' .. command)
-		    ) then
+		        not is_verbose_info(s, command)) then
 			is_in_body = true -- in case we match inside the body
 			table.insert(lines, s)
 		end
@@ -111,7 +121,6 @@ local function set_lines_and_filetype_from_result(result, buf, command)
 	vim.api.nvim_buf_set_text(buf, 0, 0, 0, 0, lines)
 
 	vim.api.nvim_buf_set_option(buf, 'filetype', buf_file_type)
-
 end
 
 local function hurl_run()
@@ -170,4 +179,105 @@ end
 function HurlRunFull()
 	local buf = hurl_run_full()
 	split_to_buf(buf)
+end
+
+---@param result string
+---@param buf integer
+---@param command string
+local function set_lines_and_verbose_from_result(result, buf, verbose_buf, command)
+	local buf_file_type = ''
+	local body_lines = {}
+	local verbose_lines = {}
+	local is_in_body = false
+
+	for s in result:gmatch("[^\r\n]+") do
+		local is_response_header = is_http_response_header(s)
+		if (
+		    (is_in_body)
+		        or
+		        not is_verbose_info(s, command)) then
+			is_in_body = true -- in case we match inside the body
+			table.insert(body_lines, s)
+		else
+			table.insert(verbose_lines, s)
+		end
+
+		if is_response_header and string_starts_with(s:lower(), '< content-type:') then
+			buf_file_type = get_file_type_from_content_type(s)
+		end
+	end
+
+	vim.api.nvim_buf_set_text(buf, 0, 0, 0, 0, body_lines)
+	vim.api.nvim_buf_set_option(buf, 'filetype', buf_file_type)
+
+	vim.api.nvim_buf_set_text(verbose_buf, 0, 0, 0, 0, verbose_lines)
+	vim.api.nvim_buf_set_option(verbose_buf, 'filetype', 'sh')
+end
+
+---@return integer, integer
+local function hurl_run_verbose()
+	local filetype = vim.bo.filetype
+	if filetype ~= 'hurl' then return -1, -1 end
+
+	local filename = vim.api.nvim_buf_get_name(0)
+
+	local command = '!' .. get_command(filename, '--verbose')
+	---@diagnostic disable-next-line: undefined-field - it is defined.
+	local result = vim.api.nvim_command_output(command)
+
+	local buf = vim.api.nvim_create_buf(false, false)
+	local verbose_buf = vim.api.nvim_create_buf(false, false)
+
+	set_lines_and_verbose_from_result(result, buf, verbose_buf, command)
+	vim.api.nvim_buf_set_option(buf, "readonly", false)
+	vim.api.nvim_buf_set_option(verbose_buf, "readonly", false)
+
+	return buf, verbose_buf
+end
+
+local function split_to_buf_and_verbose(buf, verbose_buf)
+	local current_window = vim.api.nvim_get_current_win()
+
+	if temp_win == nil or not vim.api.nvim_win_is_valid(temp_win) then
+
+		vim.cmd('vsplit')
+		local win = vim.api.nvim_get_current_win()
+		temp_win = win
+	end
+
+	if temp_verbose_win == nil or not vim.api.nvim_win_is_valid(temp_verbose_win) then
+
+		vim.cmd('split')
+		local win = vim.api.nvim_get_current_win()
+		temp_verbose_win = win
+		vim.api.nvim_win_set_height(temp_verbose_win, 10)
+	end
+
+
+	vim.api.nvim_buf_set_option(buf, "modified", false)
+	vim.api.nvim_win_set_buf(temp_win, buf)
+
+	vim.bo[buf].buftype = 'nofile'
+	vim.bo[buf].bufhidden = 'hide'
+	vim.bo[buf].swapfile = false
+
+	vim.api.nvim_buf_set_option(verbose_buf, "modified", false)
+	vim.api.nvim_win_set_buf(temp_verbose_win, verbose_buf)
+
+	vim.bo[verbose_buf].buftype = 'nofile'
+	vim.bo[verbose_buf].bufhidden = 'hide'
+	vim.bo[verbose_buf].swapfile = false
+
+	vim.api.nvim_set_current_win(current_window)
+end
+
+function HurlRunVerbose()
+	local buf, verbose_buf = hurl_run_verbose()
+
+	if buf == -1 then
+		print('cannot run hurl command in non-hurl file')
+		return
+	end
+
+	split_to_buf_and_verbose(buf, verbose_buf)
 end
