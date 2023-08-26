@@ -103,7 +103,7 @@ local function set_lines_and_filetype_from_result(result, buf, command)
 			table.insert(lines, s)
 		end
 
-		if is_response_header and string_starts_with(s, '< content-type:') then
+		if is_response_header and string_starts_with(s:lower(), '< content-type:') then
 			buf_file_type = get_file_type_from_content_type(s)
 		end
 	end
