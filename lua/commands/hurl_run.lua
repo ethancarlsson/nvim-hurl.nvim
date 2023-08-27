@@ -123,7 +123,7 @@ local function hurl_run()
 	local filetype = vim.bo.filetype
 	if filetype ~= 'hurl' then
 		print('cannot run hurl command in non-hurl file')
-		return
+		return -1
 	end
 
 	local filename = vim.api.nvim_buf_get_name(0)
@@ -141,6 +141,11 @@ end
 
 function HurlRun()
 	local buf = hurl_run()
+
+	if buf == -1 then
+		return
+	end
+
 	split_to_buf(buf)
 end
 
