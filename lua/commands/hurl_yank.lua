@@ -9,7 +9,10 @@ return {
 
 		local filename = vim.api.nvim_buf_get_name(0)
 
-		local handle, err = io.popen('hurl ' .. filename)
+		local command = require('commands.hurl_run.command')
+		    .get_command(filename, '')
+
+		local handle, err = io.popen(command)
 
 		if handle == nil then
 			print('something went wrong while running hurl file')

@@ -1,5 +1,5 @@
-local constants = require('commands.constants.files')
 local windows = require('commands.windows.window')
+local hurl_run_command = require('commands.hurl_run.command')
 
 -- http://lua-users.org/wiki/StringRecipes
 local function string_starts_with(str, start)
@@ -47,21 +47,6 @@ local function get_file_type_from_content_type(content_type)
 	return ''
 end
 
----@param filename string
----@param options string
-local function get_command(filename, options)
-	local command = 'hurl'
-
-	local f = io.open(constants.VARS_FILE, 'r')
-
-	if f ~= nil then
-		local variable_file_location = f:read('*a')
-
-		return string.format('%s --variables-file=%s %s %s', command, variable_file_location, options, filename)
-	end
-
-	return string.format('%s %s %s', command, options, filename)
-end
 
 local function split_to_buf(buf)
 	local current_window = vim.api.nvim_get_current_win()
@@ -128,7 +113,7 @@ local function hurl_run()
 
 	local filename = vim.api.nvim_buf_get_name(0)
 
-	local command = '!' .. get_command(filename, '--verbose')
+	local command = '!' .. hurl_run_command.get_command(filename, '--verbose')
 	---@diagnostic disable-next-line: undefined-field - it is defined.
 	local result = vim.api.nvim_command_output(command)
 
@@ -148,7 +133,7 @@ local function hurl_run_full()
 	end
 
 	local filename = vim.api.nvim_buf_get_name(0)
-	local command = get_command(filename, '')
+	local command = hurl_run_command.get_command(filename, '')
 	local handle, err = io.popen(command, 'r')
 
 	if handle == nil then
@@ -216,7 +201,7 @@ local function hurl_run_verbose()
 
 	local filename = vim.api.nvim_buf_get_name(0)
 
-	local command = '!' .. get_command(filename, '--verbose')
+	local command = '!' .. hurl_run_command.get_command(filename, '--verbose')
 	---@diagnostic disable-next-line: undefined-field - it is defined.
 	local result = vim.api.nvim_command_output(command)
 
