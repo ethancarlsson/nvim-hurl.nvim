@@ -17,3 +17,11 @@ jobs:
         run: luarocks install luacheck
       - name: 'check'
         run: luacheck .
+  test:
+    name: 'test'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: leafo/gh-actions-lua@v9
+      - name: 'run tests'
+        run: lua lua/tests/run_tests.lua

@@ -11,6 +11,6 @@ std = {
 }
 
 exclude_files = {
-    '.luarocks',
+	'.luarocks',
+	'lua/tests',
 }
-

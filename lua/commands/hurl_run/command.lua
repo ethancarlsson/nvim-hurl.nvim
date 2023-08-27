@@ -2,13 +2,14 @@ local constants = require('commands.constants.files')
 
 ---@param filename string
 ---@param options string
-local function get_command(filename, options)
+---@param io_object object?
+local function get_command(filename, options, io_object)
 	local command = 'hurl'
 
-	local f = io.open(constants.VARS_FILE, 'r')
+	local file = io_object.open(constants.VARS_FILE, 'r')
 
-	if f ~= nil then
-		local variable_file_location = f:read('*a')
+	if file ~= nil then
+		local variable_file_location = file:read('*a')
 
 		return string
 		    .format(
