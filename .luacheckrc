@@ -9,3 +9,8 @@ std = {
 		'os',
 	}
 }
+
+exclude_files = {
+    '.luarocks',
+}
+
