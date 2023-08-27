@@ -1,5 +1,3 @@
-TEMP_RESULT_WINDOW = 'result_win'
-VERBOSE_RESULT_WINDOW = 'verbose_win'
 
 local state = {
 }
@@ -7,7 +5,7 @@ local state = {
 ---@param name string
 ---@param win integer
 ---@return integer
-function SetWindow(name, win)
+local function set_window(name, win)
 	state[name] = win
 	return win
 end
@@ -15,6 +13,14 @@ end
 --
 ---@param name string
 ---@return integer?
-function GetWindow(name)
+local function get_window(name)
 	return state[name]
 end
+
+
+return {
+	TEMP_RESULT_WINDOW = 'result_win',
+	VERBOSE_RESULT_WINDOW = 'verbose_win',
+	set_window = set_window,
+	get_window = get_window,
+}

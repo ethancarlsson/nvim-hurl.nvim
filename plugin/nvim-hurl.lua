@@ -1,35 +1,11 @@
 vim.cmd [[ au BufRead,BufNewFile *.hurl                setfiletype hurl ]]
 
-function HurlYank()
-	local filetype = vim.bo.filetype
-	if filetype ~= 'hurl' then return end
-
-	local filename = vim.api.nvim_buf_get_name(0)
-
-	local handle, err = io.popen('hurl ' .. filename)
-
-	if handle == nil then
-		print('something went wrong while running hurl file')
-		return
-	end
-
-	if not err == nil then
-		vim.fn.setreg('*', err)
-		return
-	end
-
-	local result = handle:read('*all')
-
-	handle:close()
-
-	vim.fn.setreg('*', result)
-end
-
-vim.cmd([[ command! HurlYank lua HurlYank() ]])
+vim.cmd([[ command! HurlYank lua require('commands.hurl_yank').yank() ]])
 
 require('commands.hurl_run')
-vim.cmd([[ command! HurlRun lua HurlRun() ]])
-vim.cmd([[ command! HurlRunFull lua HurlRunFull() ]])
-vim.cmd([[ command! HurlRunVerbose lua HurlRunVerbose() ]])
-require('commands.hurl_set_vars_file')
-vim.cmd([[ command! -nargs=1 Hurlsvf lua HurlSetVarsFile(<f-args>) ]])
+vim.cmd([[ command! HurlRun lua require('commands.hurl_run').run() ]])
+vim.cmd([[ command! HurlRunFull lua require('commands.hurl_run').full() ]])
+vim.cmd([[ command! HurlRunVerbose lua require('commands.hurl_run').verbose() ]])
+vim.cmd(
+	[[ command! -nargs=1 Hurlsvf lua require('commands.hurl_set_vars_file').hurl_set_vars_file(<f-args>)]]
+)

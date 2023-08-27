@@ -1,5 +1,5 @@
-require('commands.constants.files')
-require('commands.windows.window')
+local constants = require('commands.constants.files')
+local windows = require('commands.windows.window')
 
 -- http://lua-users.org/wiki/StringRecipes
 local function string_starts_with(str, start)
@@ -52,7 +52,7 @@ end
 local function get_command(filename, options)
 	local command = 'hurl'
 
-	local f = io.open(VARS_FILE, 'r')
+	local f = io.open(constants.VARS_FILE, 'r')
 
 	if f ~= nil then
 		local variable_file_location = f:read('*a')
@@ -65,11 +65,11 @@ end
 
 local function split_to_buf(buf)
 	local current_window = vim.api.nvim_get_current_win()
-	local win = GetWindow(TEMP_RESULT_WINDOW)
+	local win = windows.get_window(windows.TEMP_RESULT_WINDOW)
 	if win == nil or not vim.api.nvim_win_is_valid(win) then
 
 		vim.cmd('vsplit')
-		win = SetWindow(TEMP_RESULT_WINDOW, vim.api.nvim_get_current_win())
+		win = windows.set_window(windows.TEMP_RESULT_WINDOW, vim.api.nvim_get_current_win())
 	end
 
 	vim.api.nvim_buf_set_option(buf, "modified", false)
@@ -139,16 +139,6 @@ local function hurl_run()
 	return buf
 end
 
-function HurlRun()
-	local buf = hurl_run()
-
-	if buf == -1 then
-		return
-	end
-
-	split_to_buf(buf)
-end
-
 ---@return integer
 local function hurl_run_full()
 	local filetype = vim.bo.filetype
@@ -166,7 +156,7 @@ local function hurl_run_full()
 		return -1
 	end
 
-	if not err == nil then
+	if err ~= nil then
 		vim.fn.setreg('*', err)
 		print('something went wrong while running hurl file')
 		return -1
@@ -181,18 +171,6 @@ local function hurl_run_full()
 	handle:close()
 
 	return buf
-end
-
---- This function is used for larger responses HurlRun() will cut off the result
---- by default.
-function HurlRunFull()
-	local buf = hurl_run_full()
-
-	if buf == -1 then
-		return
-	end
-
-	split_to_buf(buf)
 end
 
 ---@param result string
@@ -231,7 +209,10 @@ end
 ---@return integer, integer
 local function hurl_run_verbose()
 	local filetype = vim.bo.filetype
-	if filetype ~= 'hurl' then return -1, -1 end
+	if filetype ~= 'hurl' then
+		print('cannot run hurl command in non-hurl file')
+		return -1, -1
+	end
 
 	local filename = vim.api.nvim_buf_get_name(0)
 
@@ -252,19 +233,19 @@ end
 local function split_to_buf_and_verbose(buf, verbose_buf)
 	local current_window = vim.api.nvim_get_current_win()
 
-	local result_win = GetWindow(TEMP_RESULT_WINDOW)
-	local verbose_win = GetWindow(VERBOSE_RESULT_WINDOW)
+	local result_win = windows.get_window(windows.TEMP_RESULT_WINDOW)
+	local verbose_win = windows.get_window(windows.VERBOSE_RESULT_WINDOW)
 
 	if result_win == nil or not vim.api.nvim_win_is_valid(result_win) then
 
 		vim.cmd('vsplit')
-		result_win = SetWindow(TEMP_RESULT_WINDOW, vim.api.nvim_get_current_win())
+		result_win = windows.set_window(windows.TEMP_RESULT_WINDOW, vim.api.nvim_get_current_win())
 	end
 
 	if verbose_win == nil or not vim.api.nvim_win_is_valid(verbose_win) then
 
 		vim.cmd('split')
-		verbose_win = SetWindow(VERBOSE_RESULT_WINDOW, vim.api.nvim_get_current_win())
+		verbose_win = windows.set_window(windows.VERBOSE_RESULT_WINDOW, vim.api.nvim_get_current_win())
 	end
 
 
@@ -285,13 +266,32 @@ local function split_to_buf_and_verbose(buf, verbose_buf)
 	vim.api.nvim_set_current_win(current_window)
 end
 
-function HurlRunVerbose()
-	local buf, verbose_buf = hurl_run_verbose()
+return {
+	verbose = function()
+		local buf, verbose_buf = hurl_run_verbose()
 
-	if buf == -1 then
-		print('cannot run hurl command in non-hurl file')
-		return
+		if buf == -1 then
+			return
+		end
+
+		split_to_buf_and_verbose(buf, verbose_buf)
+	end,
+	run = function()
+		local buf = hurl_run()
+
+		if buf == -1 then
+			return
+		end
+
+		split_to_buf(buf)
+	end,
+	full = function()
+		local buf = hurl_run_full()
+
+		if buf == -1 then
+			return
+		end
+
+		split_to_buf(buf)
 	end
-
-	split_to_buf_and_verbose(buf, verbose_buf)
-end
+}
