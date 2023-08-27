@@ -1,7 +1,8 @@
 package.path = 'lua/?.lua;' .. package.path
 
 local tests = {
-	['tests.commands.hurl_run.command_test'] = require('tests.commands.hurl_run.command_test')
+	['tests.commands.hurl_run.utilities.command_test'] = require('tests.commands.hurl_run.utilities.command_test'),
+	['tests.commands.hurl_run.run_test'] = require('tests.commands.hurl_run.run_test')
 }
 
 local tests_passed = true

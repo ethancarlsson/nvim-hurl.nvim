@@ -1,14 +1,13 @@
 local asserts = require('tests.asserts')
 local mocks = require('tests.mocks')
-local command = require('commands.hurl_run.command')
+local command = require('commands.hurl_run.utilities.command')
 
 return {
 	['test: get_command with nil file returns command without variables file'] = function()
-		local mock_io_object = {
-			open = function()
-				return nil
-			end
-		}
+		local mock_io_object = mocks:get_io()
+		mock_io_object.open = function()
+			return nil
+		end
 
 		return asserts
 		    .assert_equals(
@@ -19,11 +18,10 @@ return {
 	end,
 	['test: get_command with variables file returns command with variables file located'] = function()
 
-		local mock_io_object = {
-			open = function()
-				return mocks.file
-			end
-		}
+		local mock_io_object = mocks:get_io()
+		mock_io_object.open = function()
+			return mocks.get_file()
+		end
 
 		return asserts
 		    .assert_equals(

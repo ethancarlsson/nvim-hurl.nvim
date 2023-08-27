@@ -1,5 +1,7 @@
 local windows = require('commands.windows.window')
-local hurl_run_command = require('commands.hurl_run.command')
+local hurl_run_command = require('commands.hurl_run.utilities.command')
+local hurl_run_service = require('commands.hurl_run.utilities.hurl_run_service')
+local hurl_run = require('commands.hurl_run.run')
 
 -- http://lua-users.org/wiki/StringRecipes
 local function string_starts_with(str, start)
@@ -76,54 +78,6 @@ local function is_verbose_info(line, command)
 	    or line == ':' .. command)
 end
 
----@param result string
----@param buf integer
----@param command string
-local function set_lines_and_filetype_from_result(result, buf, command)
-	local buf_file_type = ''
-	local lines = {}
-	local is_in_body = false
-	for s in result:gmatch("[^\r\n]+") do
-		local is_response_header = is_http_response_header(s)
-		if (
-		    (is_in_body)
-		        or
-		        not is_verbose_info(s, command)) then
-			is_in_body = true -- in case we match inside the body
-			table.insert(lines, s)
-		end
-
-		if is_response_header and string_starts_with(s:lower(), '< content-type:') then
-			buf_file_type = get_file_type_from_content_type(s)
-		end
-	end
-
-	vim.api.nvim_buf_set_text(buf, 0, 0, 0, 0, lines)
-
-	vim.api.nvim_buf_set_option(buf, 'filetype', buf_file_type)
-end
-
----@return integer
-local function hurl_run()
-	local filetype = vim.bo.filetype
-	if filetype ~= 'hurl' then
-		print('cannot run hurl command in non-hurl file')
-		return -1
-	end
-
-	local filename = vim.api.nvim_buf_get_name(0)
-
-	local command = '!' .. hurl_run_command.get_command(filename, '--verbose', io)
-	---@diagnostic disable-next-line: undefined-field - it is defined.
-	local result = vim.api.nvim_command_output(command)
-
-	local buf = vim.api.nvim_create_buf(false, false)
-	set_lines_and_filetype_from_result(result, buf, command)
-	vim.api.nvim_buf_set_option(buf, "readonly", false)
-
-	return buf
-end
-
 ---@return integer
 local function hurl_run_full()
 	local filetype = vim.bo.filetype
@@ -150,7 +104,7 @@ local function hurl_run_full()
 	local result = handle:read('*all')
 
 	local buf = vim.api.nvim_create_buf(false, false)
-	set_lines_and_filetype_from_result(result, buf, command)
+	hurl_run_service.set_lines_and_filetype_from_result(result, buf, command, vim)
 	vim.api.nvim_buf_set_option(buf, "readonly", false)
 
 	handle:close()
@@ -262,7 +216,7 @@ return {
 		split_to_buf_and_verbose(buf, verbose_buf)
 	end,
 	run = function()
-		local buf = hurl_run()
+		local buf = hurl_run.run(vim, io)
 
 		if buf == -1 then
 			return
