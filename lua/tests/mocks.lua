@@ -28,6 +28,9 @@ function mocks.get_file()
 		return 'test_file_contents'
 	end
 
+	function mock_file:close()
+	end
+
 	return mock_file
 end
 

@@ -11,6 +11,7 @@ local function get_command(filename, options, io_object)
 	if file ~= nil then
 		local variable_file_location = file:read('*a')
 
+		file:close()
 		return string
 		    .format(
 		            '%s --variables-file=%s %s %s',
