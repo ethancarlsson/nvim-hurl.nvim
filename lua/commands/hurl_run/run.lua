@@ -15,7 +15,6 @@ function hurl_run.run(vim, io)
 
 	local filename = vim.api.nvim_buf_get_name(0)
 	local command = '!' .. hurl_run_command.get_command(filename, '--verbose', io)
-	---@diagnostic disable-next-line: undefined-field - it is defined.
 	local result = vim.api.nvim_command_output(command)
 
 	local buf = vim.api.nvim_create_buf(false, false)
