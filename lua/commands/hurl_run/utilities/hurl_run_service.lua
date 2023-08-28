@@ -87,8 +87,9 @@ end
 ---@param result string
 ---@param buf integer
 ---@param verbose_buf integer
+---@param vim object
 ---@param command string
-function service.set_lines_and_verbose_from_result(result, buf, verbose_buf, command)
+function service.set_lines_and_verbose_from_result(result, buf, verbose_buf, command, vim)
 	local buf_file_type = ''
 	local body_lines = {}
 	local verbose_lines = {}

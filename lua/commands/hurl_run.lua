@@ -1,6 +1,4 @@
 local windows = require('commands.windows.window')
-local hurl_run_command = require('commands.hurl_run.utilities.command')
-local hurl_run_service = require('commands.hurl_run.utilities.hurl_run_service')
 local hurl_run = require('commands.hurl_run.run')
 
 local function split_to_buf(buf)
@@ -19,30 +17,6 @@ local function split_to_buf(buf)
 	vim.bo[buf].swapfile = false
 
 	vim.api.nvim_set_current_win(current_window)
-end
-
----@return integer, integer
-local function hurl_run_verbose()
-	local filetype = vim.bo.filetype
-	if filetype ~= 'hurl' then
-		print('cannot run hurl command in non-hurl file')
-		return -1, -1
-	end
-
-	local filename = vim.api.nvim_buf_get_name(0)
-
-	local command = '!' .. hurl_run_command.get_command(filename, '--verbose', io)
-	---@diagnostic disable-next-line: undefined-field - it is defined.
-	local result = vim.api.nvim_command_output(command)
-
-	local buf = vim.api.nvim_create_buf(false, false)
-	local verbose_buf = vim.api.nvim_create_buf(false, false)
-
-	hurl_run_service.set_lines_and_verbose_from_result(result, buf, verbose_buf, command)
-	vim.api.nvim_buf_set_option(buf, "readonly", false)
-	vim.api.nvim_buf_set_option(verbose_buf, "readonly", false)
-
-	return buf, verbose_buf
 end
 
 local function split_to_buf_and_verbose(buf, verbose_buf)
@@ -83,7 +57,7 @@ end
 
 return {
 	verbose = function()
-		local buf, verbose_buf = hurl_run_verbose()
+		local buf, verbose_buf = hurl_run.verbose(vim, io)
 
 		if buf == -1 then
 			return

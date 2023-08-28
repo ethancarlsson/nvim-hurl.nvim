@@ -57,9 +57,32 @@ local function test_hurl_run_full__with_err__returns_negative1()
 	    and asserts.assert_equals(actual_error_message, error_message)
 end
 
+local function test_hurl_run_verbose__returns_two_buffers_with_text_set()
+	local io = mocks.get_io()
+	local vim = mocks.get_vim()
+
+	local buff_count = 1
+
+	vim.api.nvim_create_buf = function()
+		buff_count = buff_count + 1
+		return buff_count
+	end
+
+
+	local expected_body_buf = 2
+	local expected_verbose_buf = 3
+
+
+	local actual_body, actual_verbose = hurl_run.verbose(vim, io)
+
+	return asserts.assert_equals(expected_body_buf, actual_body)
+	    and asserts.assert_equals(expected_verbose_buf, actual_verbose)
+end
+
 return {
 	['test_hurl_run_run__returns_buf'] = test_hurl_run_run__returns_buf,
 	['test_hurl_run_run__with_non_hurl_file__returns_negative_1'] = test_hurl_run_run__with_non_hurl_file__returns_negative_1,
 	['test_hurl_run_full__with_command_no_return_from_command__returns_negative1'] = test_hurl_run_full__with_command_no_return_from_command__returns_negative1,
 	['test_hurl_run_full__with_err__returns_negative1'] = test_hurl_run_full__with_err__returns_negative1,
+	['test_hurl_run_verbose__returns_two_buffers_with_text_set'] = test_hurl_run_verbose__returns_two_buffers_with_text_set,
 }
