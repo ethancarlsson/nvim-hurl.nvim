@@ -84,4 +84,38 @@ function service.set_lines_and_filetype_from_result(result, buf, command, vim)
 	vim.api.nvim_buf_set_option(buf, 'filetype', buf_file_type)
 end
 
+---@param result string
+---@param buf integer
+---@param verbose_buf integer
+---@param command string
+function service.set_lines_and_verbose_from_result(result, buf, verbose_buf, command)
+	local buf_file_type = ''
+	local body_lines = {}
+	local verbose_lines = {}
+	local is_in_body = false
+
+	for s in result:gmatch("[^\r\n]+") do
+		local is_response_header = is_http_response_header(s)
+		if (
+		    (is_in_body)
+		        or
+		        not is_verbose_info(s, command)) then
+			is_in_body = true -- in case we match inside the body
+			table.insert(body_lines, s)
+		else
+			table.insert(verbose_lines, s)
+		end
+
+		if is_response_header and string_starts_with(s:lower(), '< content-type:') then
+			buf_file_type = get_file_type_from_content_type(s)
+		end
+	end
+
+	vim.api.nvim_buf_set_text(buf, 0, 0, 0, 0, body_lines)
+	vim.api.nvim_buf_set_option(buf, 'filetype', buf_file_type)
+
+	vim.api.nvim_buf_set_text(verbose_buf, 0, 0, 0, 0, verbose_lines)
+	vim.api.nvim_buf_set_option(verbose_buf, 'filetype', 'sh')
+end
+
 return service

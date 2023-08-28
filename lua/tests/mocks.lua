@@ -18,6 +18,10 @@ function mocks.get_vim()
 			end,
 			nvim_buf_set_text = function()
 			end,
+		},
+		fn = { setreg = function()
+
+		end
 		}
 	}
 end
