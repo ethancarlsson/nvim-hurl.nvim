@@ -2,24 +2,34 @@
 INTRODUCTION                                                    *nvim-hurl.nvim*
 
 nvim-hurl.nvim is a plugin that adds various utilities to improve your workflow
-when using .hurl files.
+when using `.hurl` files.
 
-                                                                      *:HurlYank*
+                                                                *:HurlYank*
 :HurlYank
-Run a hurl file and yank the results into the "*" register.
+Run a hurl file and yank the results into the `"*` register.
 
-                                                                      *:HurlRun*
+                                                                *:HurlRun*
 :HurlRun
 Run a hurl file and view the results in a split window scratch file. NOTE:
-HurlRun will cut off part of the results if it's very long. For a full result
-see :HurlRunFull.
+`HurlRun` will cut off part of the results if it's very long. For a full result
+see `:HurlRunFull`.
 
-                                                                      *:HurlRunFull*
+                                                                *:HurlRunFull*
 :HurlRunFull
-Run a hurl file and view the results in a split window scratch file. NOTE: This
-will get the full result, but will not add any metadata to the scratch file.
+Run a hurl file and view the results in a split window scratch file. 
 
-You set filetype={filetype} on the scratch file if you need LSP support 
+NOTE: This will get the full result, but will not add any metadata to the 
+scratch file.
+
+You can use `set filetype={filetype}` on the scratch file if you need LSP support 
 or syntax highlighting. But be warned, for the kind of results where you will 
-need the HurlRunFull command LSPs and syntax highlighting might be pretty slow.
+need the `HurlRunFull` command LSPs and syntax highlighting might be pretty slow.
 
+                                                                *:Hurlsvf*
+:Hurlsvf
+Hurl [s]et [v]ariables [f]iles. This command will set the variables file for a
+project.
+
+It will generate a file, `.hurl_variable_location`, to keep track of your 
+variables. If your using git, consider adding this file to your `.gitignore` file 
+or your exclude file with `echo '.hurl_variable_location' >> .git/info/exclude`
