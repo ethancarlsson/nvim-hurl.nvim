@@ -74,11 +74,16 @@ return {
 
 		split_to_buf(buf)
 	end,
-	full = function()
+	---@param expected_file_type string?
+	full = function(expected_file_type)
 		local buf = hurl_run.full(vim, io)
 
 		if buf == -1 then
 			return
+		end
+
+		if expected_file_type ~= nil then
+			vim.api.nvim_buf_set_option(buf, 'filetype', expected_file_type)
 		end
 
 		split_to_buf(buf)
