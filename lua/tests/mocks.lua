@@ -1,4 +1,5 @@
 local mocks = {}
+
 function mocks.get_vim()
 	return {
 		bo = {
@@ -7,9 +8,6 @@ function mocks.get_vim()
 		api = {
 			nvim_buf_get_name = function()
 				return 'test_file_name'
-			end,
-			nvim_command_output = function()
-				return 'test_result'
 			end,
 			nvim_create_buf = function()
 				return 1
@@ -39,11 +37,19 @@ function mocks.get_file()
 end
 
 function mocks.get_io()
-	return {
+	local io = {
 		open = function()
 			return mocks.get_file()
-		end
+		end,
+		popen = function()
+		end,
 	}
+
+	function io:read()
+		return 'test_result'
+	end
+
+	return io
 end
 
 return mocks
