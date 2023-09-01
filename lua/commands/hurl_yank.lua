@@ -9,18 +9,18 @@ return {
 
 		local filename = vim.api.nvim_buf_get_name(0)
 
-		local command = require('commands.hurl_run.command')
-		    .get_command(filename, '')
+		local command = require('commands.hurl_run.utilities.command')
+		    .get_command(filename, '', io)
 
 		local handle, err = io.popen(command)
 
-		if handle == nil then
+		if err ~= nil then
 			print('something went wrong while running hurl file')
 			return
 		end
 
-		if err ~= nil then
-			vim.fn.setreg('*', err)
+		if handle == nil then
+			print('something went wrong while running hurl file')
 			return
 		end
 
