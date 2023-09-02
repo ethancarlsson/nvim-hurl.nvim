@@ -41,7 +41,6 @@ Run a hurl file and yank the results into the `"*` register.
 ### :HurlRun
 Run a hurl file and view the results in a split window scratch file. This will
 set the file type of the result based on content type in the response header.
-It will not give the full response if it is too large.
 
 ### :Hurlsvf {variable_file_location}
 Hurl [s]et [v]ariables [f]iles. This command will set the variables file for a
