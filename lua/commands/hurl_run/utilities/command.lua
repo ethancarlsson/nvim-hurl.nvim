@@ -26,5 +26,5 @@ local function get_command(filename, options, io_object)
 end
 
 return {
-	get_command = get_command
+	get_command = get_command,
 }

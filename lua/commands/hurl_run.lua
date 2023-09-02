@@ -1,23 +1,7 @@
 local windows = require('commands.windows.window')
 local hurl_run = require('commands.hurl_run.run')
+local splitwindows = require('commands.windows.split')
 
-local function split_to_buf(buf)
-	local current_window = vim.api.nvim_get_current_win()
-	local win = windows.get_window(windows.TEMP_RESULT_WINDOW)
-	if win == nil or not vim.api.nvim_win_is_valid(win) then
-
-		vim.cmd('vsplit')
-		win = windows.set_window(windows.TEMP_RESULT_WINDOW, vim.api.nvim_get_current_win())
-	end
-
-	vim.api.nvim_buf_set_option(buf, "modified", false)
-	vim.api.nvim_win_set_buf(win, buf)
-	vim.bo[buf].buftype = 'nofile'
-	vim.bo[buf].bufhidden = 'hide'
-	vim.bo[buf].swapfile = false
-
-	vim.api.nvim_set_current_win(current_window)
-end
 
 local function split_to_buf_and_verbose(buf, verbose_buf)
 	local current_window = vim.api.nvim_get_current_win()
@@ -72,6 +56,6 @@ return {
 			return
 		end
 
-		split_to_buf(buf)
+		splitwindows.split_to_buf(buf)
 	end,
 }

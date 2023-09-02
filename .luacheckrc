@@ -7,6 +7,8 @@ std = {
 		'string',
 		'table',
 		'os',
+		'pairs',
+		'ipairs',
 	}
 }
 
