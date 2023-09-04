@@ -8,3 +8,6 @@ vim.cmd([[ command! HurlRunVerbose lua require('commands.hurl_run').verbose() ]]
 vim.cmd(
 	[[ command! -nargs=1 Hurlsvf lua require('commands.hurl_set_vars_file').hurl_set_vars_file(<f-args>)]]
 )
+vim.cmd(
+	[[ command! -nargs=* HurlGo lua require('commands.hurl_run').go(<f-args>)]]
+)

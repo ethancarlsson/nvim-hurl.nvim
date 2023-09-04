@@ -1,9 +1,12 @@
 local constants = require('commands.constants.files')
+local state = require('commands.hurl_run.utilities.state')
+
+local c = {}
 
 ---@param filename string
 ---@param options string
 ---@param io_object object?
-local function get_command(filename, options, io_object)
+function c.get_command(filename, options, io_object)
 	local command = 'hurl'
 
 	local file = io_object.open(constants.VARS_FILE, 'r')
@@ -25,6 +28,16 @@ local function get_command(filename, options, io_object)
 	return string.format('%s %s %s', command, options, filename)
 end
 
-return {
-	get_command = get_command,
-}
+function c.get_curl_go_to(url)
+	local curl = 'curl -sS ' .. url
+	local headers = state:get_headers()
+
+	if #headers == 0 then
+		return curl
+	end
+
+	return curl .. ' --header "' .. table.concat(headers, '" --header "') .. '"'
+end
+
+
+return c

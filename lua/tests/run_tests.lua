@@ -3,6 +3,7 @@ package.path = 'lua/?.lua;' .. package.path
 local tests = {
 	['tests.commands.hurl_run.utilities.command_test'] = require('tests.commands.hurl_run.utilities.command_test'),
 	['tests.commands.hurl_run.utilities.service_test'] = require('tests.commands.hurl_run.utilities.service_test'),
+	['tests.commands.hurl_run.utilities.headers'] = require('tests.commands.hurl_run.utilities.headers_test'),
 }
 
 local tests_passed = true

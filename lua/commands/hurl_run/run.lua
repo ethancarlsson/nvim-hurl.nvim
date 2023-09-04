@@ -1,6 +1,9 @@
 local hurl_run_command = require('commands.hurl_run.utilities.command')
 local hurl_run_service = require('commands.hurl_run.utilities.hurl_run_service')
+local headers = require('commands.hurl_run.utilities.headers')
 local windowsplit = require('commands.windows.split')
+local window = require('commands.windows.window')
+local state = require('commands.hurl_run.utilities.state')
 
 local hurl_run = {}
 
@@ -27,6 +30,8 @@ local function read_verbose_on_stderr(buf, data)
 		vim.api.nvim_buf_set_option(buf, 'filetype', response_filetype)
 		windowsplit.reset_window()
 	end
+
+	state:set_current_headers(headers.get_request_headers_from_verbose_lines(data))
 end
 
 local function run_on_stdout(buf, data)
@@ -48,6 +53,9 @@ function hurl_run.run(vim, io)
 	vim.api.nvim_buf_set_option(buf, "readonly", false)
 
 	local filename = vim.api.nvim_buf_get_name(0)
+
+	-- Clear here to make sure we don't have to think about async with headers
+	state:clear_current_headers()
 
 	vim.schedule(function()
 		local command = hurl_run_command.get_command(filename, '--verbose', io)
@@ -74,10 +82,12 @@ function hurl_run.verbose(vim, io)
 	local buf = vim.api.nvim_create_buf(false, false)
 	local verbose_buf = vim.api.nvim_create_buf(false, false)
 
-	vim.api.nvim_buf_set_option(buf, "readonly", false)
-	vim.api.nvim_buf_set_option(verbose_buf, "readonly", false)
+	vim.api.nvim_buf_set_option(buf, 'readonly', false)
+	vim.api.nvim_buf_set_option(verbose_buf, 'readonly', false)
 
 	local filename = vim.api.nvim_buf_get_name(0)
+	-- Clear here to make sure we don't have to think about async with headers
+	state:clear_current_headers()
 
 	vim.schedule(function()
 		local command = hurl_run_command.get_command(filename, '--verbose', io)
@@ -118,6 +128,49 @@ function hurl_run.yank(vim, io)
 	end)
 
 	return buf
+end
+
+---@param noreuse string?
+---@param url string
+function hurl_run.go(url, noreuse)
+
+	local result = {}
+
+	local function go_on_stdout(_, data)
+		-- We only want to create/update the buffer when we
+		-- get the response. That way the user can keep interacting with
+		-- the previous response.
+		local buf = window.get_buf_of_window(window.TEMP_RESULT_WINDOW)
+
+		if buf == nil then
+			buf = vim.api.nvim_create_buf(false, false)
+		end
+
+		vim.api.nvim_buf_set_option(buf, 'readonly', false)
+
+		for _, line in ipairs(data) do
+			table.insert(result, line)
+		end
+
+		local line_count = vim.api.nvim_buf_line_count(buf)
+		vim.api.nvim_buf_set_lines(buf, 1, line_count, false, result)
+
+		windowsplit.split_to_buf(buf)
+	end
+
+	vim.schedule(function()
+		local curl_command = 'curl -sS ' .. url
+
+		if noreuse ~= 'noreuse' then
+			curl_command = hurl_run_command.get_curl_go_to(url)
+		end
+
+		vim.fn.jobstart(curl_command, {
+			on_stdout = go_on_stdout,
+			on_stderr = go_on_stdout, -- Not a mistake, just realised
+			-- That it's the same
+		})
+	end)
 end
 
 return hurl_run

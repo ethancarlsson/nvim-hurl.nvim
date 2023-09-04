@@ -58,4 +58,14 @@ return {
 
 		splitwindows.split_to_buf(buf)
 	end,
+	---@param url string
+	---@param noreuse string?
+	go = function(url, noreuse)
+		if url == nil then
+			print('HurlGo cannot run without a url as the first argument')
+
+			return
+		end
+		hurl_run.go(url, noreuse)
+	end,
 }
