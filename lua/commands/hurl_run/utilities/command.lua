@@ -28,8 +28,15 @@ function c.get_command(filename, options, io_object)
 	return string.format('%s %s %s', command, options, filename)
 end
 
+---@param url string
+---@return string
 function c.get_curl_go_to(url)
 	local curl = 'curl -sS ' .. url
+		:gsub('?', '\\?')
+		:gsub('=', '\\=')
+		:gsub('&', '\\&')
+		:gsub('%^', '\\^')
+
 	local headers = state:get_headers()
 
 	if #headers == 0 then

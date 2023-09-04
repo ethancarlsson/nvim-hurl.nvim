@@ -75,5 +75,22 @@ return {
 		            command.get_curl_go_to('https://api.example.com'),
 		            nil
 		    )
+	end,
+	['test: get_curl_go_to with characters needing escape, escapes them'] = function()
+		state:clear_current_headers()
+
+		local expected_curl = 'curl -sS https://swapi.dev/api/people/\\?page\\=2'
+
+		state:set_current_headers({
+			''
+		})
+
+
+		return asserts
+		    .assert_equals(
+		            expected_curl,
+		            command.get_curl_go_to('https://swapi.dev/api/people/?page=2'),
+		            nil
+		    )
 	end
 }

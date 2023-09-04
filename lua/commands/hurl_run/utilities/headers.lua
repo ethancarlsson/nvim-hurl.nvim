@@ -7,7 +7,7 @@ local function is_header(line)
 	return not (
 	    starts_with(line, '*') or starts_with(line, '<')
 	    )
-	    and string.match(line, ':')
+	    and line:find('[%a%d]+%s*:%s*[%a%d{}:"/*%[%]()@%%+*%- _%.;,\\\'?!<>=#$&`|~^%%]+$')
 end
 
 local headers = {}

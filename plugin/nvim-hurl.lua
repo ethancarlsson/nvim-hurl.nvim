@@ -11,3 +11,6 @@ vim.cmd(
 vim.cmd(
 	[[ command! -nargs=* HurlGo lua require('commands.hurl_run').go(<f-args>)]]
 )
+vim.cmd(
+	[[ command! -nargs=* HurlGoFromCursor lua require('commands.hurl_run').go_from_cursor(<f-args>)]]
+)

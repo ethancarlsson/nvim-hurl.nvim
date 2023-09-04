@@ -4,6 +4,7 @@ local headers = require('commands.hurl_run.utilities.headers')
 local windowsplit = require('commands.windows.split')
 local window = require('commands.windows.window')
 local state = require('commands.hurl_run.utilities.state')
+local url_service = require('commands.hurl_run.utilities.url')
 
 local hurl_run = {}
 
@@ -153,7 +154,7 @@ function hurl_run.go(url, noreuse)
 		end
 
 		local line_count = vim.api.nvim_buf_line_count(buf)
-		vim.api.nvim_buf_set_lines(buf, 1, line_count, false, result)
+		vim.api.nvim_buf_set_lines(buf, 0, line_count, false, result)
 
 		windowsplit.split_to_buf(buf)
 	end
@@ -164,6 +165,9 @@ function hurl_run.go(url, noreuse)
 		if noreuse ~= 'noreuse' then
 			curl_command = hurl_run_command.get_curl_go_to(url)
 		end
+		local buf = window.get_buf_of_window(window.TEMP_RESULT_WINDOW)
+		local line_count = vim.api.nvim_buf_line_count(buf)
+		vim.api.nvim_buf_set_lines(buf, 0, line_count, false, {''})
 
 		vim.fn.jobstart(curl_command, {
 			on_stdout = go_on_stdout,
@@ -171,6 +175,16 @@ function hurl_run.go(url, noreuse)
 			-- That it's the same
 		})
 	end)
+end
+
+---@param noreuse string
+function hurl_run.go_from_cursor(noreuse)
+	local url = url_service.get_from_string(vim.fn.expand('<cWORD>'))
+	if url == nil then
+		print('cant go to a non-url resource')
+		return
+	end
+	hurl_run.go(url, noreuse)
 end
 
 return hurl_run

@@ -68,4 +68,8 @@ return {
 		end
 		hurl_run.go(url, noreuse)
 	end,
+	---@param noreuse string
+	go_from_cursor = function(noreuse)
+		hurl_run.go_from_cursor(noreuse)
+	end
 }
