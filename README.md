@@ -4,6 +4,13 @@
 
 ![gif showing how nvim-hurl can be used](https://raw.githubusercontent.com/ethancarlsson/nvim-hurl-images/master/example_gifs/nvimhurl.gif) 
 
+NOTE: This is an unofficial plugin, visit https://hurl.dev for more information
+about the project.
+
+Also, note there is another project here: https://github.com/pfeiferj/nvim-hurl
+that does something very similar to this. Check it out in case it serves your
+needs better than this plugin.
+
 ## Installation
 Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
