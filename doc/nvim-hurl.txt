@@ -26,7 +26,13 @@ It will generate a file, `.hurl_variable_location`, to keep track of your
 variables. If your using git, consider adding this file to your `.gitignore` file 
 or your exclude file with `echo '.hurl_variable_location' >> .git/info/exclude`
 
-                                                                *:HurlGo*
-:HurlGo
+                                                                *:CurlGo*
+:CurlGo
 Make a simple GET request, reusing the headers of the previous request. To
-prevent reuse of previous headers, use `:HurlGo {url} noreuse`.
+prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
+
+                                                                *:CurlGoFromCursor*
+:CurlGoFromCursor
+Run `CurlGo` running the but using the url directly under the cursor.
+
+NOTE: Will reuse headers unless `noreuse` option is passed to it.

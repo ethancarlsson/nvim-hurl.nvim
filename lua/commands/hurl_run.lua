@@ -65,7 +65,7 @@ return {
 	---@param noreuse string?
 	go = function(url, noreuse)
 		if url == nil then
-			print('HurlGo cannot run without a url as the first argument')
+			print('CurlGo cannot run without a url as the first argument')
 
 			return
 		end
