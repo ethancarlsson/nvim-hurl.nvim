@@ -8,6 +8,9 @@ local url_service = require('commands.hurl_run.utilities.url')
 
 local hurl_run = {}
 
+---@param verbose_buf integer
+---@param buf integer
+---@param data table<string>
 local function write_verbose_on_stderr(verbose_buf, buf, data)
 	local line_count = vim.api.nvim_buf_line_count(verbose_buf)
 	vim.api.nvim_buf_set_lines(verbose_buf, line_count, line_count, false, data)
@@ -23,6 +26,8 @@ local function write_verbose_on_stderr(verbose_buf, buf, data)
 	vim.api.nvim_buf_set_option(verbose_buf, 'filetype', 'sh')
 end
 
+---@param buf integer
+---@param data table<string>
 local function read_verbose_on_stderr(buf, data)
 	local response_filetype = hurl_run_service
 	    .get_file_type_of_response(data)
@@ -35,15 +40,16 @@ local function read_verbose_on_stderr(buf, data)
 	state:set_current_headers(headers.get_request_headers_from_verbose_lines(data))
 end
 
+---@param buf integer
+---@param data table<string>
 local function run_on_stdout(buf, data)
 	local line_count = vim.api.nvim_buf_line_count(buf)
 	vim.api.nvim_buf_set_lines(buf, line_count, line_count, false, data)
 end
 
----@param vim object
----@param io object
+---@param io iolib
 ---@return integer
-function hurl_run.run(vim, io)
+function hurl_run.run(io)
 	local filetype = vim.bo.filetype
 	if filetype ~= 'hurl' then
 		print('cannot run hurl command in non-hurl file')
@@ -70,10 +76,9 @@ function hurl_run.run(vim, io)
 	return buf
 end
 
----@param vim object
----@param io object
+---@param io iolib
 ---@return integer, integer
-function hurl_run.verbose(vim, io)
+function hurl_run.verbose(io)
 	local filetype = vim.bo.filetype
 	if filetype ~= 'hurl' then
 		print('cannot run hurl command in non-hurl file')
@@ -102,7 +107,9 @@ function hurl_run.verbose(vim, io)
 	return buf, verbose_buf
 end
 
-function hurl_run.yank(vim, io)
+---@param io iolib
+---@return integer
+function hurl_run.yank(io)
 	local filetype = vim.bo.filetype
 	if filetype ~= 'hurl' then
 		print('cannot run hurl command in non-hurl file')

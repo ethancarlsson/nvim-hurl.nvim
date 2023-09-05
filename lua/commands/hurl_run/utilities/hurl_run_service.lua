@@ -1,3 +1,5 @@
+local string_utilities = require('commands.hurl_run.utilities.strings')
+
 local service = {}
 
 ---@param content_type string
@@ -18,16 +20,11 @@ local function get_file_type_from_content_type(content_type)
 	return nil
 end
 
--- http://lua-users.org/wiki/StringRecipes
-local function string_starts_with(str, start)
-	return str:sub(1, #start) == start
-end
-
 ---@param verbose_lines string[]
 ---@return string?
 function service.get_file_type_of_response(verbose_lines)
 	for _, s in pairs(verbose_lines) do
-		if string_starts_with(s:lower(), '< content-type:') then
+		if string_utilities.starts_with(s:lower(), '< content-type:') then
 			return get_file_type_from_content_type(s)
 		end
 	end

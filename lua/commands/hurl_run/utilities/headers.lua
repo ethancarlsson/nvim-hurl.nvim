@@ -1,11 +1,9 @@
-local function starts_with(str, start)
-	return str:sub(1, #start) == start
-end
+local string_utilities = require('commands.hurl_run.utilities.strings')
 
 ---@param line string
 local function is_header(line)
 	return not (
-	    starts_with(line, '*') or starts_with(line, '<')
+	    string_utilities.starts_with(line, '*') or string_utilities.starts_with(line, '<')
 	    )
 	    and line:find('[%a%d]+%s*:%s*[%a%d{}:"/*%[%]()@%%+*%- _%.;,\\\'?!<>=#$&`|~^%%]+$')
 end
@@ -18,7 +16,7 @@ function headers.get_request_headers_from_verbose_lines(verbose_lines)
 	local h = {}
 
 	for _, line in ipairs(verbose_lines) do
-		if starts_with(line, '<') then
+		if string_utilities.starts_with(line, '<') then
 			return h
 		end
 

@@ -1,3 +1,6 @@
+---@param old string
+---@param new string
+---@return string
 local function get_string_diff(old, new)
 	local prv = {}
 	for o = 0, #old do
@@ -50,6 +53,10 @@ local function assert_equals_ordered_tables(expected, actual, message)
 	return false
 end
 
+---@param expected any
+---@param actual any
+---@param message string?
+---@return boolean
 local function assert_equals(expected, actual, message)
 	if expected == actual then
 		return true

@@ -3,6 +3,8 @@ local hurl_run = require('commands.hurl_run.run')
 local splitwindows = require('commands.windows.split')
 
 
+---@param buf integer
+---@param verbose_buf integer
 local function split_to_buf_and_verbose(buf, verbose_buf)
 	local current_window = vim.api.nvim_get_current_win()
 
@@ -15,12 +17,13 @@ local function split_to_buf_and_verbose(buf, verbose_buf)
 		result_win = windows.set_window(windows.TEMP_RESULT_WINDOW, vim.api.nvim_get_current_win())
 	end
 
+	vim.api.nvim_set_current_win(result_win)
+
 	if verbose_win == nil or not vim.api.nvim_win_is_valid(verbose_win) then
 
 		vim.cmd('split')
 		verbose_win = windows.set_window(windows.VERBOSE_RESULT_WINDOW, vim.api.nvim_get_current_win())
 	end
-
 
 	vim.api.nvim_buf_set_option(buf, "modified", false)
 	vim.api.nvim_win_set_buf(result_win, buf)
@@ -41,7 +44,7 @@ end
 
 return {
 	verbose = function()
-		local buf, verbose_buf = hurl_run.verbose(vim, io)
+		local buf, verbose_buf = hurl_run.verbose(io)
 
 		if buf == -1 then
 			return
@@ -50,7 +53,7 @@ return {
 		split_to_buf_and_verbose(buf, verbose_buf)
 	end,
 	run = function()
-		local buf = hurl_run.run(vim, io)
+		local buf = hurl_run.run(io)
 
 		if buf == -1 then
 			return
@@ -66,6 +69,7 @@ return {
 
 			return
 		end
+
 		hurl_run.go(url, noreuse)
 	end,
 	---@param noreuse string
