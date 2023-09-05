@@ -58,3 +58,13 @@ project.
 ### :HurlVerbose
 Run a hurl file and view the result and the results of the hurl `--verbose` option
 in two seperate scratch files.
+
+### :CurlGo
+Make a simple GET request, reusing the headers of the previous request. To
+prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
+
+### :CurlGoFromCursor
+Run `CurlGo` running the but using the url directly under the cursor.
+
+NOTE: Will reuse headers unless `noreuse` option is passed to it.
+
