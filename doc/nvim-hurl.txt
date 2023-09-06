@@ -26,6 +26,18 @@ It will generate a file, `.hurl_variable_location`, to keep track of your
 variables. If your using git, consider adding this file to your `.gitignore` file 
 or your exclude file with `echo '.hurl_variable_location' >> .git/info/exclude`
 
+                                                                *:Hurlsv*
+:Hurlsv
+Hurl [s]et [v]ariable. Sets a temporary variable, it is the equivelant to the
+command line `--variable` option. It accepts exactly two arguments, the name
+of the variable and the variable. `:Hurlsv name value` is equivelant to
+`--variable name=value` from the command line.
+
+NOTE: These values will not persist after your session ends.
+                                                                *:Hurlvc*
+:Hurlvc
+Hurl [variables] [c]lear. Clear all temporary variables set via `:Hurlsv`.
+
                                                                 *:CurlGo*
 :CurlGo
 Make a simple GET request, reusing the headers of the previous request. To
@@ -36,3 +48,4 @@ prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
 Run `CurlGo` running the but using the url directly under the cursor.
 
 NOTE: Will reuse headers unless `noreuse` option is passed to it.
+
