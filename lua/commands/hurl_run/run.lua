@@ -24,6 +24,7 @@ local function write_verbose_on_stderr(verbose_buf, buf, data)
 	end
 
 	vim.api.nvim_buf_set_option(verbose_buf, 'filetype', 'sh')
+	state:set_current_headers(headers.get_request_headers_from_verbose_lines(data))
 end
 
 ---@param buf integer
@@ -171,6 +172,7 @@ function hurl_run.go(url, noreuse)
 
 		if noreuse ~= 'noreuse' then
 			curl_command = hurl_run_command.get_curl_go_to(url)
+			print(curl_command)
 		end
 		local buf = window.get_buf_of_window(window.TEMP_RESULT_WINDOW)
 		local line_count = vim.api.nvim_buf_line_count(buf)
@@ -191,6 +193,7 @@ function hurl_run.go_from_cursor(noreuse)
 		print('cant go to a non-url resource')
 		return
 	end
+
 	hurl_run.go(url, noreuse)
 end
 
