@@ -51,7 +51,7 @@ function c.get_curl_go_to(url)
 		return curl
 	end
 
-	return curl .. ' --header "' .. table.concat(headers, '" --header "') .. '"'
+	return curl .. ' ' .. table.concat(headers, ' ')
 end
 
 return c

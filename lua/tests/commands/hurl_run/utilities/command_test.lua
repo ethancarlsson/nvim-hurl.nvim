@@ -2,6 +2,7 @@ local asserts = require('tests.asserts')
 local mocks = require('tests.mocks')
 local command = require('commands.hurl_run.utilities.command')
 local state = require('commands.hurl_run.utilities.state')
+local headers = require('commands.hurl_run.utilities.headers')
 local temp_variables = require('commands.hurl_run.utilities.temp_variables')
 
 
@@ -66,16 +67,20 @@ return {
 		            nil
 		    )
 	end,
-	['test: get_curl_go_to with headers returns curl with headers'] = function()
+	['integration_test: get_curl_go_to with headers returns curl with headers'] = function()
 		temp_variables.clear_variables()
 		state:clear_current_headers()
 
-		local expected_curl = 'curl -sS https://api.example.com --header "testname: testval"'
+		local expected_curl = 'curl -sS https://api.example.com --header \'testname: testval\' --header \'something_else: test-1234\''
 
-		state:set_current_headers({
-			'testname: testval'
-		})
+		local curl_headers = headers.get_request_headers_from_verbose_lines(
+			{
+				"* curl --header 'testname: testval' --header 'something_else: test-1234' 'https://api.example.com'",
+			}
+		)
 
+
+		state:set_current_headers(curl_headers)
 
 		return asserts
 		    .assert_equals(
