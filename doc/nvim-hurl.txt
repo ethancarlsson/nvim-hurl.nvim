@@ -43,9 +43,11 @@ Hurl [v]ariables [c]lear. Clear all temporary variables set via `:Hurlsv`.
 Make a simple GET request, reusing the headers of the previous request. To
 prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
 
+The curl command will be printed to the command line.
+
                                                                 *:CurlGoFromCursor*
 :CurlGoFromCursor
-Run `CurlGo` running the but using the url directly under the cursor.
+Run `:CurlGo` running the but using the url directly under the cursor.
 
 NOTE: Will reuse headers unless `noreuse` option is passed to it.
 
