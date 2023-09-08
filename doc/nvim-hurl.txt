@@ -36,7 +36,7 @@ of the variable and the variable. `:Hurlsv name value` is equivelant to
 NOTE: These values will not persist after your session ends.
                                                                 *:Hurlvc*
 :Hurlvc
-Hurl [variables] [c]lear. Clear all temporary variables set via `:Hurlsv`.
+Hurl [v]ariables [c]lear. Clear all temporary variables set via `:Hurlsv`.
 
                                                                 *:CurlGo*
 :CurlGo
