@@ -12,6 +12,8 @@ Run a hurl file and yank the results into the `"*` register.
 :HurlRun
 Run a hurl file and view the results in a split window scratch file.
 
+The hurl command will be printed to the command line so you know what command
+is being run under the hood.
                                                                 *:HurlRunVerbose*
 :HurlRunVerbose
 Run a hurl file and view the result and the results of the hurl `--verbose` option
@@ -43,7 +45,8 @@ Hurl [v]ariables [c]lear. Clear all temporary variables set via `:Hurlsv`.
 Make a simple GET request, reusing the headers of the previous request. To
 prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
 
-The curl command will be printed to the command line.
+The curl command will be printed to the command line so you know what command
+is being run under the hood.
 
                                                                 *:CurlGoFromCursor*
 :CurlGoFromCursor

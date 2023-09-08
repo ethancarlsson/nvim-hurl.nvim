@@ -67,6 +67,8 @@ function hurl_run.run(io)
 
 	vim.schedule(function()
 		local command = hurl_run_command.get_command(filename, '--verbose', io)
+		print(command)
+
 		vim.fn.jobstart(command, {
 			on_stderr = function(_, data) read_verbose_on_stderr(buf, data) end,
 			on_stdout = function(_, data) run_on_stdout(buf, data)
@@ -81,6 +83,7 @@ end
 ---@return integer, integer
 function hurl_run.verbose(io)
 	local filetype = vim.bo.filetype
+
 	if filetype ~= 'hurl' then
 		print('cannot run hurl command in non-hurl file')
 		return -1, -1
@@ -98,6 +101,8 @@ function hurl_run.verbose(io)
 
 	vim.schedule(function()
 		local command = hurl_run_command.get_command(filename, '--verbose', io)
+		print(command)
+
 		vim.fn.jobstart(command, {
 			on_stderr = function(_, data) write_verbose_on_stderr(verbose_buf, buf, data) end,
 			on_stdout = function(_, data) run_on_stdout(buf, data)
@@ -125,6 +130,8 @@ function hurl_run.yank(io)
 	local result = ''
 	vim.schedule(function()
 		local command = hurl_run_command.get_command(filename, '', io)
+		print(command)
+
 		vim.fn.jobstart(command, {
 			on_stdout = function(_, data)
 				for _, v in ipairs(data) do
@@ -172,11 +179,12 @@ function hurl_run.go(url, noreuse)
 
 		if noreuse ~= 'noreuse' then
 			curl_command = hurl_run_command.get_curl_go_to(url)
-			print(curl_command)
 		end
+		print(curl_command)
+
 		local buf = window.get_buf_of_window(window.TEMP_RESULT_WINDOW)
 		local line_count = vim.api.nvim_buf_line_count(buf)
-		vim.api.nvim_buf_set_lines(buf, 0, line_count, false, {''})
+		vim.api.nvim_buf_set_lines(buf, 0, line_count, false, { '' })
 
 		vim.fn.jobstart(curl_command, {
 			on_stdout = go_on_stdout,
