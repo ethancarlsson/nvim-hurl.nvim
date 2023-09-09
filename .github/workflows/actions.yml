@@ -23,5 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: leafo/gh-actions-lua@v9
-      - name: 'run tests'
-        run: lua lua/tests/run_tests.lua
+      - uses: leafo/gh-actions-luarocks@v4
+      - name: 'install LuaSocket'
+        run: luarocks install LuaSocket
+      - name: 'install neovim'
+        run: |
+          sudo apt update
+          sudo apt install -y neovim
+      - name: 'run unit tests'
+        run: make test_unit

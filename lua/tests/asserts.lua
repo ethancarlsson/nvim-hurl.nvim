@@ -1,3 +1,5 @@
+local M = {}
+
 ---@param old string
 ---@param new string
 ---@return string
@@ -25,8 +27,6 @@ local function get_string_diff(old, new)
 	end
 	return prv[#old]
 end
-
-local asserts = {}
 
 ---@param expected table
 ---@param actual table
@@ -73,7 +73,7 @@ end
 ---@param expected any
 ---@param actual any
 ---@param message string?
-function asserts.assert_equals(expected, actual, message)
+function M.assert_equals(expected, actual, message)
 	if type(expected) == 'table' and type(actual) == 'table' then
 		return assert_equals_ordered_tables(expected, actual, message)
 	else
@@ -81,4 +81,22 @@ function asserts.assert_equals(expected, actual, message)
 	end
 end
 
-return asserts
+---@param expected_contains string
+---@param str string
+---@param message string?
+---@return boolean
+function M.assert_string_contains(expected_contains, str, message)
+	if str:find(expected_contains) then
+		return true
+	end
+
+	if message ~= nil then
+		print(message)
+	end
+
+	print(string.format('failed asserting that %s contains the string %s'))
+
+	return false
+end
+
+return M

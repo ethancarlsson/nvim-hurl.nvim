@@ -9,6 +9,8 @@ std = {
 		'os',
 		'pairs',
 		'ipairs',
+		'assert',
+		'pcall',
 	}
 }
 
