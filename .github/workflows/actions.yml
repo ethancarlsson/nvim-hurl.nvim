@@ -5,20 +5,8 @@ on:
   pull_request:
     branches: [master]
 jobs:
-  lint:
-    name: 'linting (luacheck)'
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: leafo/gh-actions-lua@v9
-      - uses: leafo/gh-actions-luarocks@v4
-      # Install luacheck
-      - name: 'install luacheck'
-        run: luarocks install luacheck
-      - name: 'check'
-        run: luacheck .
   test:
-    name: 'test'
+    name: 'test and lint'
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
@@ -32,3 +20,7 @@ jobs:
           sudo apt install -y neovim
       - name: 'run unit tests'
         run: make test_unit
+      - name: 'install luacheck'
+        run: luarocks install luacheck
+      - name: 'check'
+        run: luacheck .
