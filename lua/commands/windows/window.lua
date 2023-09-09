@@ -1,10 +1,9 @@
-
 local state = {
 }
 
 ---@param name string
----@param win integer
----@return integer
+---@param win integer?
+---@return integer?
 local function set_window(name, win)
 	state[name] = win
 	return win
@@ -26,11 +25,14 @@ local function get_buf_of_window(window_name)
 		return nil
 	end
 
-	local buf = vim.api.nvim_win_get_buf(window)
+	local is_win_valid, buf = pcall(function() return vim.api.nvim_win_get_buf(window) end)
 
-	return buf
+	if is_win_valid then
+		return buf
+	else
+		return set_window(window_name, nil)
+	end
 end
-
 
 return {
 	TEMP_RESULT_WINDOW = 'result_win',
