@@ -1,6 +1,4 @@
 local asserts  = require('tests.asserts')
-local hurl_run = require('commands.hurl_run.run')
-local asserts  = require('tests.asserts')
 local mocks    = require('tests.mocks')
 local hurl_run = require('commands.hurl_run.run')
 

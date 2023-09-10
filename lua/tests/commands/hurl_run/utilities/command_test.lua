@@ -71,11 +71,11 @@ return {
 		temp_variables.clear_variables()
 		state:clear_current_headers()
 
-		local expected_curl = 'curl -sS https://api.example.com --header \'testname: testval\' --header \'something_else: test-1234\''
+		local expected_curl = 'curl -sS https://api.example.com --header \'testname: testval\' --header \'t_2: t-1234\''
 
 		local curl_headers = headers.get_request_headers_from_verbose_lines(
 			{
-				"* curl --header 'testname: testval' --header 'something_else: test-1234' 'https://api.example.com'",
+				"* curl --header 'testname: testval' --header 't_2: t-1234' 'https://api.example.com'",
 			}
 		)
 

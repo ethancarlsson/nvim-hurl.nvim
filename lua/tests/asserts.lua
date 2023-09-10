@@ -67,6 +67,7 @@ local function assert_equals(expected, actual, message)
 	end
 
 	print(string.format('failed asserting expected %s = %s', expected, actual))
+
 	return false
 end
 

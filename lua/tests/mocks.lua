@@ -26,12 +26,16 @@ end
 
 function mocks.get_file()
 	local mock_file = {};
+	--luacheck: push no unused args
 	function mock_file:read()
 		return 'test_file_contents'
 	end
+	--luacheck: pop
 
+	--luacheck: push no unused args
 	function mock_file:close()
 	end
+	--luacheck: pop
 
 	return mock_file
 end
@@ -45,9 +49,11 @@ function mocks.get_io()
 		end,
 	}
 
+	--luacheck: push no unused args
 	function io:read()
 		return 'test_result'
 	end
+	--luacheck: pop
 
 	return io
 end

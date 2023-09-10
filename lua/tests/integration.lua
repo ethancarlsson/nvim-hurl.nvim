@@ -1,3 +1,4 @@
+-- luacheck: globals no package
 package.path = 'lua/?.lua;' .. package.path
 
 local runner = require('tests.test_runner.runner')

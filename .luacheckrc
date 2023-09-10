@@ -11,10 +11,12 @@ std = {
 		'ipairs',
 		'assert',
 		'pcall',
+		'error',
+		'type',
 	}
 }
 
 exclude_files = {
 	'.luarocks',
-	'lua/tests',
+	-- 'lua/tests',
 }
