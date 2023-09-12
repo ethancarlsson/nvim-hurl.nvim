@@ -95,7 +95,7 @@ function M.assert_string_contains(expected_contains, str, message)
 		print(message)
 	end
 
-	print(string.format('failed asserting that %s contains the string %s'))
+	print(string.format('failed asserting that %s contains the string %s', expected_contains, str))
 
 	return false
 end
