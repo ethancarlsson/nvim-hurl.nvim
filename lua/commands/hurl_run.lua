@@ -3,8 +3,8 @@ local splitwindows = require('commands.windows.split')
 
 -- Do not add any more logic here, it's too annoying to test
 return {
-	verbose = function()
-		local buf, verbose_buf = hurl_run.verbose(io)
+	verbose = function(l1, l2)
+		local buf, verbose_buf = hurl_run.verbose(io, l1, l2)
 
 		if buf == -1 then
 			return
@@ -12,8 +12,8 @@ return {
 
 		splitwindows.split_to_buf_and_verbose(buf, verbose_buf)
 	end,
-	run = function()
-		local buf = hurl_run.run(io)
+	run = function(l1, l2)
+		local buf = hurl_run.run(io, l1, l2)
 
 		if buf == -1 then
 			return

@@ -17,8 +17,8 @@ return {
 
 		return asserts
 		    .assert_equals(
-		            'hurl  --verbose test.hurl',
-		            command.get_command('test.hurl', '--verbose', mock_io_object),
+		            'hurl  --verbose',
+		            command.get_command('--verbose', mock_io_object),
 		            nil
 		    )
 	end,
@@ -32,8 +32,8 @@ return {
 
 		return asserts
 		    .assert_equals(
-		            'hurl  --variables-file=test_file_contents --verbose test.hurl',
-		            command.get_command('test.hurl', '--verbose', mock_io_object),
+		            'hurl  --variables-file=test_file_contents --verbose',
+		            command.get_command('--verbose', mock_io_object),
 		            nil
 		    )
 	end,
@@ -49,8 +49,8 @@ return {
 
 		return asserts
 		    .assert_equals(
-		            'hurl --variable name=value --variables-file=test_file_contents --verbose test.hurl',
-		            command.get_command('test.hurl', '--verbose', mock_io_object),
+		            'hurl --variable name=value --variables-file=test_file_contents --verbose',
+		            command.get_command('--verbose', mock_io_object),
 		            nil
 		    )
 	end,

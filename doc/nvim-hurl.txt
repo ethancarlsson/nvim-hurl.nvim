@@ -6,18 +6,18 @@ when using `.hurl` files.
 
                                                                 *:HurlYank*
 :HurlYank
-Run a hurl file and yank the results into the `"*` register.
+Run a hurl file, or a range, and yank the results into the `"*` register.
 
                                                                 *:HurlRun*
 :HurlRun
-Run a hurl file and view the results in a split window scratch file.
+Run a hurl file, or a range, and view the results in a split window scratch file.
 
 The hurl command will be printed to the command line so you know what command
 is being run under the hood.
                                                                 *:HurlRunVerbose*
 :HurlRunVerbose
-Run a hurl file and view the result and the results of the hurl `--verbose` option
-in two seperate scratch files.
+Run a hurl file, or a range, and view the result and the results of the hurl 
+`--verbose` option in two seperate scratch files.
 
                                                                 *:Hurlsvf*
 :Hurlsvf

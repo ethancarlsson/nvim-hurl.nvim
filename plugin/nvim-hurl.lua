@@ -1,8 +1,8 @@
 vim.cmd [[ au BufRead,BufNewFile *.hurl                setfiletype hurl ]]
 
-vim.cmd([[ command! HurlYank lua require('commands.hurl_yank').yank() ]])
-vim.cmd([[ command! HurlRun lua require('commands.hurl_run').run() ]])
-vim.cmd([[ command! HurlRunVerbose lua require('commands.hurl_run').verbose() ]])
+vim.cmd([[ command! -range=% HurlYank lua require('commands.hurl_yank').yank(<line1>, <line2>) ]])
+vim.cmd([[ command! -range=% HurlRun lua require('commands.hurl_run').run(<line1>, <line2>) ]])
+vim.cmd([[ command! -range=% HurlRunVerbose lua require('commands.hurl_run').verbose(<line1>, <line2>) ]])
 vim.cmd(
 	[[ command! -nargs=1 Hurlsvf lua require('commands.hurl_set_vars_file').hurl_set_vars_file(<f-args>)]]
 )
