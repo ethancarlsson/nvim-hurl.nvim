@@ -43,6 +43,17 @@ vim.keymap.set('n', '<leader>hh', '<cmd>CurlGoFromCursor<CR>',
     { desc = 'Run a curl request from the url under the cursor' })
 ```
 
+If you want to run just the visually selected range of a hurl file, you can add
+the following remaps.
+```lua
+vim.keymap.set( "v", "<leader>hy", ":'<,'>HurlYank<CR>",
+	{ desc = 'Run hurl file in buffer and yank contents to the register "*"' })
+vim.keymap.set( "n", "<leader>hr", ":'<,'>HurlRun<CR>",
+	{ desc = "Run hurl file in buffer and paste it's content into a split window" })
+vim.keymap.set( "v", "<leader>hv", ":'<,'>HurlRunVerbose<CR>",
+	{ desc = "Run hurl file and get additional meta info along with it" })
+```
+
 ## Commands
 ### :HurlYank
 Run a hurl file and yank the results into the `"*` register.
