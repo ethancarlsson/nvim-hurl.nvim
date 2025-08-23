@@ -1,5 +1,6 @@
 local constants = require('commands.constants.files')
 local temp_variables = require('commands.hurl_run.utilities.temp_variables')
+local jsontovariables = require('lib.jsontovariables')
 
 local M = {}
 
@@ -24,6 +25,22 @@ function M.hurl_set_var(name, variable)
 	end
 
 	temp_variables.set_variable(name, variable)
+end
+
+--- Sets variables from JSON in the given register
+---@param register string?
+function M.hurl_set_vars_register_json(register)
+	if register == nil then
+		print('Variable not set. :Hurlsvr requires one argument with the form `:Hurlsvr {register}`')
+		return;
+	end
+
+	local contents = vim.fn.getreg(register)
+	local variable_tbl = jsontovariables.parse(contents)
+
+	for name, variable in pairs(variable_tbl) do
+		temp_variables.set_variable(name, variable)
+	end
 end
 
 function M.hurl_clear_vars()

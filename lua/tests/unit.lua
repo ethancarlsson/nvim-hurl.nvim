@@ -11,4 +11,5 @@ runner.run_tests({
 	['tests.commands.hurl_run.utilities.temp_variables_test'] = require(
 		'tests.commands.hurl_run.utilities.temp_variables_test'
 	),
+	['tests.lib.jsontovariables_test'] = require('tests.lib.jsontovariables_test'),
 })
