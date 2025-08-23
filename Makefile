@@ -1,5 +1,5 @@
 test_unit:
-	lua lua/tests/unit.lua
+	nvim -l lua/tests/unit.lua
 
 test_integration:
 	lua scripts/init_test_e2e_server.lua &
