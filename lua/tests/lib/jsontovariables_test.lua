@@ -11,7 +11,7 @@ return {
 	["test: parse with example variables returns variables"] = function()
 		local result = jsontovariables.parse([[{"example": "value", "key": 2}]])
 
-		return asserts.assert_equals([["value"]], result.example) and asserts.assert_equals(2, result.key)
+		return asserts.assert_equals([["value"]], result.example) and asserts.assert_equals("2", result.key)
 	end,
 
 	["test: parse non scalar values returns only scalar"] = function()
@@ -24,6 +24,16 @@ return {
 			and asserts.assert_equals(nil, result.obj)
 	end,
 
+	["test: parse non scalar values returns only scalar but include_non_scalar used"] = function()
+		local result = jsontovariables.parse([[{
+			"example": "value", "arr": [], "obj": {}
+			}]], true)
+
+		return asserts.assert_equals([["value"]], result.example)
+			and asserts.assert_equals("[]", result.arr)
+			and asserts.assert_equals("{}", result.obj)
+	end,
+
 	["test: parse with scalar values"] = function()
 		local result = jsontovariables.parse([[{
 			"int": 2, "null": null, "float": 2.2,
@@ -31,10 +41,10 @@ return {
 			}]])
 
 		return asserts.assert_equals([["value"]], result.string)
-			and asserts.assert_equals(2, result.int)
-			and asserts.assert_equals(2.2, result.float)
-			and asserts.assert_equals(true, result["true"])
-			and asserts.assert_equals(false, result["false"])
+			and asserts.assert_equals("2", result.int)
+			and asserts.assert_equals("2.2", result.float)
+			and asserts.assert_equals("true", result["true"])
+			and asserts.assert_equals("false", result["false"])
 			and asserts.assert_equals("null", result["null"])
 	end,
 
@@ -50,7 +60,7 @@ return {
 		return asserts.assert_equals([["value"]], result.key)
 	end,
 
-	["test: with multiple invalid properties"] = function()
+	["test: with multiple partially valid JSON properties"] = function()
 		local result = jsontovariables.parse([[
 
 		"key": "value", "key2": "value2",

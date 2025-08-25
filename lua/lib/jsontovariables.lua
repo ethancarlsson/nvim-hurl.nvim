@@ -15,8 +15,13 @@ end
 --- variables from data.
 ---
 ---@param json_string string The JSON string to convert.
+---@param include_non_scalar boolean Default false. Set to true to be able to set json arrays and objects as well
 ---@return table A table of variables that can be used to fill temporary variables
-local function parse(json_string)
+local function parse(json_string, include_non_scalar)
+	if include_non_scalar == nil then
+		include_non_scalar = false
+	end
+
 	local success, tbl = pcall(vim.json.decode, json_string)
 
 	if not success then
@@ -37,7 +42,7 @@ local function parse(json_string)
 			return {}
 		end
 
-		if type(v) == "table" then
+		if not include_non_scalar and type(v) == "table" then
 			goto continue
 		end
 
@@ -46,14 +51,8 @@ local function parse(json_string)
 			goto continue
 		end
 
-		-- There's probably a better way to check for this
-		if string.format("%s", v) == "vim.NIL" then
-			res[k] = "null"
-			goto continue
-		end
-
 		if type(v) ~= "string" then
-			res[k] = v
+			res[k] = vim.json.encode(v)
 		end
 
 		::continue::

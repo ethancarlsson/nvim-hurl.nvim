@@ -29,4 +29,9 @@ function v.get_variables_as_command_options()
 	return '--variable ' .. table.concat(vars, ' --variable ')
 end
 
+---@return table
+function v.get_all()
+	return variables
+end
+
 return v
