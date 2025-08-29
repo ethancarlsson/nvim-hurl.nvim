@@ -36,6 +36,19 @@ of the variable and the variable. `:Hurlsv name value` is equivelant to
 `--variable name=value` from the command line.
 
 NOTE: These values will not persist after your session ends.
+                                                                *:Hurlsvr*
+:Hurlsvr
+Hurl [s]et [v]ariable from [register]. Sets a temporary variable from the register.
+It accepts the register as an argument and parses the contents of the register to
+find the key and value.
+
+The contents must be in json format or a partial json format, for example: {"key": "value"}
+will set the hurl variable to `--variable key=variable`. If the contents are only
+partial for example "key": "value" it will add the curly braces to make it valid json.
+
+NOTE: only scalar values are supported, so nested objects or arrays will not be parsed.
+If no key value pairs are found or if the JSON is not valid no values will be set.
+
                                                                 *:Hurlvc*
 :Hurlvc
 Hurl [v]ariables [c]lear. Clear all temporary variables set via `:Hurlsv`.
