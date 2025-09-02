@@ -46,14 +46,14 @@ local function braces_to_remove(prefix)
 end
 
 local function strsplit(inputstr, sep)
-  if sep == nil then
-    sep = "%s"
-  end
-  local t = {}
-  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-    table.insert(t, str)
-  end
-  return t
+	if sep == nil then
+		sep = "%s"
+	end
+	local t = {}
+	for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+		table.insert(t, str)
+	end
+	return t
 end
 
 local function vars_from_file()
@@ -81,19 +81,21 @@ local function vars_from_file()
 		tbl[kv[1]] = kv[2] or ""
 	end
 
-
 	return tbl
 end
 
 -- Provide completion items
 source.complete = function(_, params, callback)
-	local tmp_vars = require("commands.hurl_run.utilities.temp_variables")
-
 	local items = {}
 	local prefix = string.sub(params.context.cursor_before_line, 1, params.offset - 1)
 
 	local filevars = vars_from_file()
-	local variables = tmp_vars.get_all()
+	local tmp_vars = require("commands.hurl_run.utilities.temp_variables").get_all()
+	local variables = {}
+
+	for key, value in pairs(tmp_vars) do
+		variables[key] = value
+	end
 
 	for key, value in pairs(filevars) do
 		variables[key] = value
