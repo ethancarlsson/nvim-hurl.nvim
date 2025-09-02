@@ -5,6 +5,7 @@ local windowsplit = require("nvim-hurl.windows.split")
 local window = require("nvim-hurl.windows.window")
 local state = require("nvim-hurl.hurl_run.utilities.state")
 local url_service = require("nvim-hurl.hurl_run.utilities.url")
+local conf = require("nvim-hurl.lib.conf")
 
 local hurl_run = {}
 
@@ -63,7 +64,9 @@ function hurl_run.run(io, l1, l2)
 	-- Clear here to make sure we don't have to think about async with headers
 	state:clear_current_headers()
 	local command = hurl_run_command.get_command("--verbose", io)
-	print(command)
+	if conf.log then
+		print(command)
+	end
 
 	return buf,
 		vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
@@ -98,7 +101,9 @@ function hurl_run.verbose(io, l1, l2)
 	state:clear_current_headers()
 
 	local command = hurl_run_command.get_command("--verbose", io)
-	print(command)
+	if conf.log then
+		print(command)
+	end
 
 	local chan_id = vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
 		on_stderr = function(_, data)
@@ -127,7 +132,9 @@ function hurl_run.yank(io, l1, l2)
 	local result = ""
 	local command = hurl_run_command.get_command("", io)
 
-	print(command)
+	if conf.log then
+		print(command)
+	end
 
 	return vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
 		on_stdout = function(_, data)
@@ -173,7 +180,9 @@ function hurl_run.go(url, noreuse)
 	if noreuse ~= "noreuse" then
 		curl_command = hurl_run_command.get_curl_go_to(url)
 	end
-	print(curl_command)
+	if conf.log then
+		print(curl_command)
+	end
 
 	local buf = window.get_buf_of_window(window.TEMP_RESULT_WINDOW)
 
