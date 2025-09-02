@@ -1,6 +1,6 @@
-local asserts  = require('tests.asserts')
-local mocks    = require('tests.mocks')
-local hurl_run = require('commands.hurl_run.run')
+local asserts  = require('nvim-hurl.tests.asserts')
+local mocks    = require('nvim-hurl.tests.mocks')
+local hurl_run = require('nvim-hurl.hurl_run.run')
 
 return {
 	['integration_test: hurl_yank without hurl file'] = function()

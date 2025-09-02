@@ -1,5 +1,5 @@
-local hurl_run = require('commands.hurl_run.run')
-local splitwindows = require('commands.windows.split')
+local hurl_run = require('nvim-hurl.hurl_run.run')
+local splitwindows = require('nvim-hurl.windows.split')
 
 -- Do not add any more logic here, it's too annoying to test
 return {

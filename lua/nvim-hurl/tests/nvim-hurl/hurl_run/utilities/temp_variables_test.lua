@@ -1,5 +1,5 @@
-local asserts = require('tests.asserts')
-local temp_variables = require('commands.hurl_run.utilities.temp_variables')
+local asserts = require('nvim-hurl.tests.asserts')
+local temp_variables = require('nvim-hurl.hurl_run.utilities.temp_variables')
 
 return {
 	['test: get_variables_as_command_options with no variables, returns empty string'] = function()

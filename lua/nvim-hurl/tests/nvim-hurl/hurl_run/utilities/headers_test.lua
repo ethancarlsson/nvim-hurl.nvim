@@ -1,5 +1,5 @@
-local asserts = require('tests.asserts')
-local headers = require('commands.hurl_run.utilities.headers')
+local asserts = require('nvim-hurl.tests.asserts')
+local headers = require('nvim-hurl.hurl_run.utilities.headers')
 
 return {
 	['test: get_request_headers_from_verbose_lines with no lines, returns empty table'] = function()

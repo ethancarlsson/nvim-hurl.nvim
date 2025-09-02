@@ -1,6 +1,6 @@
-local constants = require('commands.constants.files')
-local temp_variables = require('commands.hurl_run.utilities.temp_variables')
-local jsontovariables = require('lib.jsontovariables')
+local constants = require('nvim-hurl.constants.files')
+local temp_variables = require('nvim-hurl.hurl_run.utilities.temp_variables')
+local jsontovariables = require('nvim-hurl.lib.jsontovariables')
 
 local M = {}
 
@@ -36,7 +36,7 @@ function M.hurl_set_vars_register_json(register)
 	end
 
 	local contents = vim.fn.getreg(register)
-	local variable_tbl = jsontovariables.parse(contents)
+	local variable_tbl = jsontovariables.parse(contents, true)
 
 	for name, variable in pairs(variable_tbl) do
 		temp_variables.set_variable(name, variable)

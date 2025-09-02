@@ -1,6 +1,6 @@
-local constants = require("commands.constants.files")
-local state = require("commands.hurl_run.utilities.state")
-local temp_variables = require("commands.hurl_run.utilities.temp_variables")
+local constants = require("nvim-hurl.constants.files")
+local state = require("nvim-hurl.hurl_run.utilities.state")
+local temp_variables = require("nvim-hurl.hurl_run.utilities.temp_variables")
 
 local c = {}
 

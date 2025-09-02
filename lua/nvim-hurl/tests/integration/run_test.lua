@@ -1,7 +1,7 @@
-local asserts  = require('tests.asserts')
-local hurl_run = require('commands.hurl_run.run')
-local split    = require('commands.windows.split')
-local window   = require('commands.windows.window')
+local asserts  = require('nvim-hurl.tests.asserts')
+local hurl_run = require('nvim-hurl.hurl_run.run')
+local split    = require('nvim-hurl.windows.split')
+local window   = require('nvim-hurl.windows.window')
 
 return {
 	['integration: test :HurlRun'] = function()

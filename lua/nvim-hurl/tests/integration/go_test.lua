@@ -1,6 +1,6 @@
-local asserts  = require('tests.asserts')
-local hurl_run = require('commands.hurl_run.run')
-local window   = require('commands.windows.window')
+local asserts  = require('nvim-hurl.tests.asserts')
+local hurl_run = require('nvim-hurl.hurl_run.run')
+local window   = require('nvim-hurl.windows.window')
 
 return {
 	['e2e: test :CurlGo'] = function()

@@ -58,7 +58,7 @@ end
 
 local function vars_from_file()
 	local tbl = {}
-	local constants = require("commands.constants.files")
+	local constants = require("nvim-hurl.constants.files")
 
 	local vars_file_location = io.open(constants.VARS_FILE, "r")
 	if vars_file_location == nil then
@@ -90,7 +90,7 @@ source.complete = function(_, params, callback)
 	local prefix = string.sub(params.context.cursor_before_line, 1, params.offset - 1)
 
 	local filevars = vars_from_file()
-	local tmp_vars = require("commands.hurl_run.utilities.temp_variables").get_all()
+	local tmp_vars = require("nvim-hurl.hurl_run.utilities.temp_variables").get_all()
 	local variables = {}
 
 	for key, value in pairs(tmp_vars) do

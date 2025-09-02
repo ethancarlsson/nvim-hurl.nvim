@@ -1,4 +1,4 @@
-local string_utilities = require('commands.hurl_run.utilities.strings')
+local string_utilities = require('nvim-hurl.hurl_run.utilities.strings')
 
 local headers = {}
 

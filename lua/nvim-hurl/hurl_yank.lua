@@ -1,4 +1,4 @@
-local hurl_run = require('commands.hurl_run.run')
+local hurl_run = require('nvim-hurl.hurl_run.run')
 
 return {
 	-- Do not add any logic here, it's too annoying to test

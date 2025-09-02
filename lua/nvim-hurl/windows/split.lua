@@ -1,4 +1,4 @@
-local windows = require('commands.windows.window')
+local windows = require('nvim-hurl.windows.window')
 
 local W = {}
 

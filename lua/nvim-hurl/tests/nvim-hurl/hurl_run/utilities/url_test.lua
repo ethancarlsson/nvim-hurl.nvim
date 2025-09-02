@@ -1,5 +1,5 @@
-local asserts = require('tests.asserts')
-local url = require('commands.hurl_run.utilities.url')
+local asserts = require('nvim-hurl.tests.asserts')
+local url = require('nvim-hurl.hurl_run.utilities.url')
 
 return {
 	['test: get_from_string with url an exact match to a url'] = function()

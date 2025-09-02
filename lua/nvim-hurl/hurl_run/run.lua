@@ -1,10 +1,10 @@
-local hurl_run_command = require("commands.hurl_run.utilities.command")
-local hurl_run_service = require("commands.hurl_run.utilities.hurl_run_service")
-local headers = require("commands.hurl_run.utilities.headers")
-local windowsplit = require("commands.windows.split")
-local window = require("commands.windows.window")
-local state = require("commands.hurl_run.utilities.state")
-local url_service = require("commands.hurl_run.utilities.url")
+local hurl_run_command = require("nvim-hurl.hurl_run.utilities.command")
+local hurl_run_service = require("nvim-hurl.hurl_run.utilities.hurl_run_service")
+local headers = require("nvim-hurl.hurl_run.utilities.headers")
+local windowsplit = require("nvim-hurl.windows.split")
+local window = require("nvim-hurl.windows.window")
+local state = require("nvim-hurl.hurl_run.utilities.state")
+local url_service = require("nvim-hurl.hurl_run.utilities.url")
 
 local hurl_run = {}
 
