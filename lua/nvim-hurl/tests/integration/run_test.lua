@@ -6,7 +6,7 @@ local window   = require('nvim-hurl.windows.window')
 return {
 	['integration: test :HurlRun'] = function()
 		vim.bo.filetype = 'hurl'
-		local buf, job = hurl_run.run(io)
+		local buf, job = hurl_run.run(io, 1, 1000)
 
 		if job <= 0 or buf == -1 then
 			print('failed asserting that :HurlRun doesn\t fail')
@@ -26,7 +26,7 @@ return {
 	end,
 	['integration: test :HurlRunVerbose'] = function()
 		vim.bo.filetype = 'hurl'
-		local buf, v_buf, job = hurl_run.verbose(io)
+		local buf, v_buf, job = hurl_run.verbose(io, 1, 1000)
 
 		if job <= 0 or buf == -1 or v_buf == -1 then
 			print('failed asserting that :HurlRunVerbose doesn\t fail')
