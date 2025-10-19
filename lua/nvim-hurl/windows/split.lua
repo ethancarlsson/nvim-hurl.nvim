@@ -44,14 +44,14 @@ function W.split_to_buf_and_verbose(buf, verbose_buf)
 		verbose_win = windows.set_window(windows.VERBOSE_RESULT_WINDOW, vim.api.nvim_get_current_win())
 	end
 
-	vim.api.nvim_buf_set_option(buf, 'modified', false)
+	vim.api.nvim_set_option_value("modified", false, { buf = buf })
 	vim.api.nvim_win_set_buf(result_win, buf)
 
 	vim.bo[buf].buftype = 'nofile'
 	vim.bo[buf].bufhidden = 'hide'
 	vim.bo[buf].swapfile = false
 
-	vim.api.nvim_buf_set_option(verbose_buf, 'modified', false)
+	vim.api.nvim_set_option_value("modified", false, { buf = verbose_buf })
 	vim.api.nvim_win_set_buf(verbose_win, verbose_buf)
 
 	vim.bo[verbose_buf].buftype = 'nofile'

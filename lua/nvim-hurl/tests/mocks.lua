@@ -12,6 +12,8 @@ function mocks.get_vim()
 			nvim_create_buf = function()
 				return 1
 			end,
+			nvim_set_option_value = function()
+			end,
 			nvim_buf_set_option = function()
 			end,
 			nvim_buf_set_text = function()

@@ -19,11 +19,11 @@ local function write_verbose_on_stderr(verbose_buf, buf, data)
 	local response_filetype = hurl_run_service.get_file_type_of_response(data)
 
 	if response_filetype ~= nil then
-		vim.api.nvim_buf_set_option(buf, "filetype", response_filetype)
+		vim.api.nvim_set_option_value("filetype", response_filetype, { buf = buf })
 		windowsplit.reset_window()
 	end
 
-	vim.api.nvim_buf_set_option(verbose_buf, "filetype", "sh")
+	vim.api.nvim_set_option_value("filetype", "sh", { buf = verbose_buf })
 	state:set_current_headers(headers.get_request_headers_from_verbose_lines(data))
 end
 
@@ -33,7 +33,7 @@ local function read_verbose_on_stderr(buf, data)
 	local response_filetype = hurl_run_service.get_file_type_of_response(data)
 
 	if response_filetype ~= nil then
-		vim.api.nvim_buf_set_option(buf, "filetype", response_filetype)
+		vim.api.nvim_set_option_value("filetype", response_filetype, { buf = buf })
 		windowsplit.reset_window()
 	end
 
@@ -57,7 +57,7 @@ function hurl_run.run(io, l1, l2)
 	end
 
 	local buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_option(buf, "readonly", false)
+	vim.api.nvim_set_option_value("readonly", false, { buf = buf })
 	local request_content = vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), l1 - 1, l2, false)
 	local request_string = table.concat(request_content, "\n")
 
@@ -92,8 +92,8 @@ function hurl_run.verbose(io, l1, l2)
 	local buf = vim.api.nvim_create_buf(false, false)
 	local verbose_buf = vim.api.nvim_create_buf(false, false)
 
-	vim.api.nvim_buf_set_option(buf, "readonly", false)
-	vim.api.nvim_buf_set_option(verbose_buf, "readonly", false)
+	vim.api.nvim_set_option_value("readonly", false, { buf = buf })
+	vim.api.nvim_set_option_value("readonly", false, { buf = verbose_buf })
 
 	local request_content = vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), l1 - 1, l2, false)
 	local request_string = table.concat(request_content, "\n")
@@ -163,7 +163,7 @@ function hurl_run.go(url, noreuse)
 			buf = vim.api.nvim_create_buf(false, false)
 		end
 
-		vim.api.nvim_buf_set_option(buf, "readonly", false)
+		vim.api.nvim_set_option_value("readonly", false, { buf = buf })
 
 		for _, line in ipairs(data) do
 			table.insert(result, line)
