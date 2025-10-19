@@ -47,6 +47,39 @@ local function run_on_stdout(buf, data)
 	vim.api.nvim_buf_set_lines(buf, line_count, line_count, false, data)
 end
 
+---@param on_stderr function
+---@param on_stdout function
+local function run(io, l1, l2, on_stderr, on_stdout)
+	local command = hurl_run_command.get_command("--verbose", io)
+	local curr_buff = vim.api.nvim_get_current_buf()
+
+	if conf.log then
+		print(command)
+	end
+
+	-- Clear here to make sure we don't have to think about async with headers
+	state:clear_current_headers()
+
+	-- vim.api.nvim_buf_line_count(curr_buff) - 1 -1 to account for first line being 1 not 0
+	local is_whole_file = l2 - l1 == vim.api.nvim_buf_line_count(curr_buff) - 1
+	if is_whole_file then
+		local filepath = vim.fn.expand("%")
+
+		return vim.fn.jobstart(command .. " " .. filepath, {
+			on_stderr = on_stderr,
+			on_stdout = on_stdout,
+		})
+	end
+
+	local request_content = vim.api.nvim_buf_get_lines(curr_buff, l1 - 1, l2, false)
+	local request_string = table.concat(request_content, "\n")
+
+	return vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
+		on_stderr = on_stderr,
+		on_stdout = on_stdout,
+	})
+end
+
 ---@param io iolib
 ---@return integer, integer
 function hurl_run.run(io, l1, l2)
@@ -58,25 +91,13 @@ function hurl_run.run(io, l1, l2)
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_set_option_value("readonly", false, { buf = buf })
-	local request_content = vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), l1 - 1, l2, false)
-	local request_string = table.concat(request_content, "\n")
-
-	-- Clear here to make sure we don't have to think about async with headers
-	state:clear_current_headers()
-	local command = hurl_run_command.get_command("--verbose", io)
-	if conf.log then
-		print(command)
-	end
 
 	return buf,
-		vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
-			on_stderr = function(_, data)
-				read_verbose_on_stderr(buf, data)
-			end,
-			on_stdout = function(_, data)
-				run_on_stdout(buf, data)
-			end,
-		})
+		run(io, l1, l2, function(_, data)
+			read_verbose_on_stderr(buf, data)
+		end, function(_, data)
+			run_on_stdout(buf, data)
+		end)
 end
 
 ---@param io iolib
@@ -95,24 +116,11 @@ function hurl_run.verbose(io, l1, l2)
 	vim.api.nvim_set_option_value("readonly", false, { buf = buf })
 	vim.api.nvim_set_option_value("readonly", false, { buf = verbose_buf })
 
-	local request_content = vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), l1 - 1, l2, false)
-	local request_string = table.concat(request_content, "\n")
-	-- Clear here to make sure we don't have to think about async with headers
-	state:clear_current_headers()
-
-	local command = hurl_run_command.get_command("--verbose", io)
-	if conf.log then
-		print(command)
-	end
-
-	local chan_id = vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
-		on_stderr = function(_, data)
-			write_verbose_on_stderr(verbose_buf, buf, data)
-		end,
-		on_stdout = function(_, data)
-			run_on_stdout(buf, data)
-		end,
-	})
+	local chan_id = run(io, l1, l2, function(_, data)
+		write_verbose_on_stderr(verbose_buf, buf, data)
+	end, function(_, data)
+		run_on_stdout(buf, data)
+	end)
 
 	return buf, verbose_buf, chan_id
 end

@@ -7,7 +7,6 @@ local c = {}
 ---@param options string
 ---@param io iolib
 function c.get_command(options, io)
-
 	local vars_file = io.open(constants.VARS_FILE, "r")
 
 	if vars_file ~= nil then
