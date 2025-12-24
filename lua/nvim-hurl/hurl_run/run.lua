@@ -12,7 +12,7 @@ local hurl_run = {}
 ---@param verbose_buf integer
 ---@param buf integer
 ---@param data table<string>
-local function write_verbose_on_stderr(verbose_buf, buf, data)
+local function write_verbose(verbose_buf, buf, data)
 	local line_count = vim.api.nvim_buf_line_count(verbose_buf)
 	vim.api.nvim_buf_set_lines(verbose_buf, line_count, line_count, false, data)
 
@@ -49,7 +49,8 @@ end
 
 ---@param on_stderr function
 ---@param on_stdout function
-local function run(io, l1, l2, on_stderr, on_stdout)
+---@param write_cmd function|nil
+local function run(io, l1, l2, on_stderr, on_stdout, write_cmd)
 	local command = hurl_run_command.get_command("--verbose", io)
 	local curr_buff = vim.api.nvim_get_current_buf()
 
@@ -62,8 +63,14 @@ local function run(io, l1, l2, on_stderr, on_stdout)
 
 	-- vim.api.nvim_buf_line_count(curr_buff) - 1 -1 to account for first line being 1 not 0
 	local is_whole_file = l2 - l1 == vim.api.nvim_buf_line_count(curr_buff) - 1
+	-- Read whole file where possible (pipes don't always work well with hurl on large files)
 	if is_whole_file then
 		local filepath = vim.fn.expand("%")
+
+		local cmd = command .. " " .. filepath
+		if write_cmd ~= nil then
+			write_cmd({cmd})
+		end
 
 		return vim.fn.jobstart(command .. " " .. filepath, {
 			on_stderr = on_stderr,
@@ -74,7 +81,12 @@ local function run(io, l1, l2, on_stderr, on_stdout)
 	local request_content = vim.api.nvim_buf_get_lines(curr_buff, l1 - 1, l2, false)
 	local request_string = table.concat(request_content, "\n")
 
-	return vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
+	local cmd = "echo '" .. request_string .. "' | " .. command
+	if write_cmd ~= nil then
+		write_cmd(vim.split(cmd, "\n"))
+	end
+
+	return vim.fn.jobstart(cmd, {
 		on_stderr = on_stderr,
 		on_stdout = on_stdout,
 	})
@@ -117,9 +129,11 @@ function hurl_run.verbose(io, l1, l2)
 	vim.api.nvim_set_option_value("readonly", false, { buf = verbose_buf })
 
 	local chan_id = run(io, l1, l2, function(_, data)
-		write_verbose_on_stderr(verbose_buf, buf, data)
+		write_verbose(verbose_buf, buf, data)
 	end, function(_, data)
 		run_on_stdout(buf, data)
+	end, function(cmd)
+		write_verbose(verbose_buf, buf, cmd)
 	end)
 
 	return buf, verbose_buf, chan_id
