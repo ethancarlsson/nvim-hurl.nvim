@@ -36,7 +36,7 @@ function M.hurl_set_vars_register_json(register)
 	end
 
 	local contents = vim.fn.getreg(register)
-	local variable_tbl = jsontovariables.parse(contents, true)
+	local variable_tbl = jsontovariables.parse(contents, false)
 
 	for name, variable in pairs(variable_tbl) do
 		temp_variables.set_variable(name, variable)

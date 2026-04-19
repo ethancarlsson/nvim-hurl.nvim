@@ -33,66 +33,60 @@ return {
 }
 ```
 
-## Usage
-
-The plugin will automatically install some commands but it's usually more
-comfortable to run those commands through a keymap.
+## Setup
+Setup must be called for keymaps to be set and completions to be registerred
 
 ```lua
-vim.keymap.set('n', '<leader>hy', '<cmd>HurlYank<CR>',
-    { desc = 'Run hurl file in buffer and yank contents to the register "*"' })
-vim.keymap.set('n', '<leader>hr', '<cmd>HurlRun<CR>',
-    { desc = 'Run hurl file in buffer and paste it\'s content into a split window' })
-vim.keymap.set('n', '<leader>hv', '<cmd>HurlRunVerbose<CR>',
-    { desc = 'Run hurl file and get additional meta info along with it' })
-vim.keymap.set('n', '<leader>hh', '<cmd>CurlGoFromCursor<CR>',
-    { desc = 'Run a curl request from the url under the cursor' })
+require("nvim-hurl").setup({
+	log = false,
+	lsp = {
+		init_options = {},
+	},
+	keymaps = {
+		run = "<localleader>hr", -- run the file
+		verbose = "<localleader>hv", -- run the file in verbose mode
+		cursor_go = "<localleader>hh", -- go to the URL location under the cursor
+		clear_vars = "<localleader>hc", -- clear variables (excluding file variables)
+		yank_var = "<localleader>yh" -- yank json line under cursor into variables, e.g. `"key": "value"` becomes `--variable key=variable`
+	},
+})
 ```
 
-If you want to run just the visually selected range of a hurl file, you can add
-the following remaps.
+### Lsp
+LSP registration is provided for [hurl-lsp](https://github.com/ethancarlsson/hurl-lsp).
+The LSP can be installed with `go install github.com/ethancarlsson/hurl-lsp`.
 
 ```lua
-vim.keymap.set( "v", "<leader>hy", ":'<,'>HurlYank<CR>",
-	{ desc = 'Run hurl file in buffer and yank contents to the register "*"' })
-vim.keymap.set( "n", "<leader>hr", ":'<,'>HurlRun<CR>",
-	{ desc = "Run hurl file in buffer and paste it's content into a split window" })
-vim.keymap.set( "v", "<leader>hv", ":'<,'>HurlRunVerbose<CR>",
-	{ desc = "Run hurl file and get additional meta info along with it" })
+require("nvim-hurl").setup({
+	lsp = {
+		init_options = {},
+	},
+})
 ```
-
-For setting variables from JSON you can use these mappings
-
-```lua
-vim.keymap.set(
-	"n",
-	"<leader>hy",
-	[[<cmd>Hurlsvr "*<CR>]],
-	{ desc = "Yank values from the register into the temp variables of the hurl file" }
-)
-
-vim.keymap.set(
-	"n",
-	"<leader>yh",
-	[["8yy<cmd>Hurlsvr "8<CR>]], -- You can use a different register if you want "8 was arbitrarily chosen
-	{ desc = "Yank line to register and then to hurl variables" }
-)
-```
-
-This is particularly useful when you are creating some resource in JSON and need to use
-values, like an ID, in subsequent requests. You can quickly pull the relevant data into
-temporary variables and use them in your hurl file.
 
 ## Commands
-
-### :HurlYank
-
-Run a hurl file and yank the results into the `"*` register.
 
 ### :HurlRun
 
 Run a hurl file and view the results in a split window scratch file. This will
 set the file type of the result based on content type in the response header.
+
+
+### :HurlVerbose
+
+Run a hurl file and view the result and the results of the hurl `--verbose` option
+in two seperate scratch files.
+
+### :CurlGo
+
+Make a simple GET request, reusing the headers of the previous request. To
+prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
+
+### :CurlGoFromCursor
+
+Run `CurlGo` running the but using the url directly under the cursor.
+
+NOTE: Will reuse headers unless `noreuse` option is passed to it.
 
 ### :Hurlsvf {variable_file_location}
 
@@ -120,22 +114,6 @@ partial for example "key": "value" it will add the curly braces to make it valid
 
 NOTE: only scalar values are supported, so nested objects or arrays will not be parsed.
 If no key value pairs are found or if the JSON is not valid no values will be set.
-
-### :HurlVerbose
-
-Run a hurl file and view the result and the results of the hurl `--verbose` option
-in two seperate scratch files.
-
-### :CurlGo
-
-Make a simple GET request, reusing the headers of the previous request. To
-prevent reuse of previous headers, use `:CurlGo {url} noreuse`.
-
-### :CurlGoFromCursor
-
-Run `CurlGo` running the but using the url directly under the cursor.
-
-NOTE: Will reuse headers unless `noreuse` option is passed to it.
 
 ## Completions
 

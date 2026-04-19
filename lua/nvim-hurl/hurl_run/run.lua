@@ -139,36 +139,6 @@ function hurl_run.verbose(io, l1, l2)
 	return buf, verbose_buf, chan_id
 end
 
----@param io iolib
----@return integer job
-function hurl_run.yank(io, l1, l2)
-	local filetype = vim.bo.filetype
-	if filetype ~= "hurl" then
-		print("cannot run hurl command in non-hurl file")
-		return -1
-	end
-
-	local request_content = vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), l1 - 1, l2, false)
-	local request_string = table.concat(request_content, "")
-
-	local result = ""
-	local command = hurl_run_command.get_command("", io)
-
-	if conf.log then
-		print(command)
-	end
-
-	return vim.fn.jobstart("echo '" .. request_string .. "' | " .. command, {
-		on_stdout = function(_, data)
-			for _, v in ipairs(data) do
-				result = result .. v
-			end
-
-			vim.fn.setreg("*", result)
-		end,
-	})
-end
-
 ---@param noreuse string?
 ---@param url string
 ---@return integer job
